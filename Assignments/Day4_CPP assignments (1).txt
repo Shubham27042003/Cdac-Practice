@@ -1,0 +1,62 @@
+Day1 assignments
+1. write a program for following(using C++)
+a. To accept a number and display whether the number is prime or not
+b. accept a number and display table of the number
+c. display size in bytes for every datatype in C++,(int, short int, long int,char,.... etc)
+
+Day2 assignments
+1.	accept amount from user and find the minimum number notes required to get the amount
+amount =512
+Notes: 2000,500,100,50,10,5,2,1
+500-1 note
+10  - 1 note
+2-  1 coin
+amount=20550
+2000 – 10 note
+500 – 1 note
+50 -1 note
+
+2. 1.	Take integer inputs from user until he/she presses q ( Ask to press q to quit after every integer input ). 
+Print average and product of all numbers.
+
+
+Day3 assignments
+1. store today's date as single integer by using bitwise operators. 
+and then convert this integer back to date
+write a function int compressdate(int dd,int mm,int yyyy)
+    
+decompress(int datecode) and display date dd/mm/yyyy
+
+
+2.Write a program using  1D array of integers.
+write a function to accept data in 1D array, and display data from array
+
+display following menu, write separate function for each option
+1. find maximum
+2. find minimum
+3. find addition of all numbers
+4. search a number
+5. find all numbers divisible by given number
+   ---- if user enters 7 then find all numbers from array which are divisible by 7
+6. find average of all numbers which are divisible by 6
+
+Day4 assignments
+1. Write a class Aarray2D to store all functions related to 2D array.
+refer the demo for 2D array
+make all functions within the class static
+Store the class in file Array2D.cpp, write another file TestArray2D.cpp
+store main function in this file. 
+Write a menu driven program to do the following, 
+result of every function should be displayed in main
+1. add 2 matrices
+2. transpose of matric
+3. multiplication of 2 matrices
+4. find sum of all values
+5. find maximum number
+6. find minimum number
+7. find rowwise minimum
+8. find rowwise maximum
+9. find rowwise sum
+10. find columnwise maximum
+11. find columnwise minimum
+12. find columnwise sum
