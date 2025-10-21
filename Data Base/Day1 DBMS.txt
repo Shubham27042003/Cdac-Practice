@@ -1,0 +1,390 @@
+MariaDB [DBMSBasic]> create table Vehicle(
+    -> vid int,
+    -> vname varchar(20),
+    -> price int,
+    -> discount int,
+    -> milage int,
+    -> details varchar(100)
+    -> );
+
+insert into Vehicle values(1,'Activa',80000,10,35,'Two  wheeler. Sturdy.Milage 30 km');
+insert into Vehicle values(2,'Santro' ,95000,20,20,'Product of Hyandai.');
+insert into Vehicle values(3,'Yamaha',160000 ,5,70,'Sturdy and good milage');
+insert into Vehicle values(4,'i-10' ,300000 ,8,18,'Good small car');
+insert into Vehicle values(5,'WaganR',250000,10,25,'Good milage car');
+insert into Vehicle values(6,'Hero Splendor' ,75000,9,65,'Best bike');
+insert into Vehicle values(7,'Royal Enfild',190000,5,40,'a royal bike');
+
+MariaDB [DBMSBasic]> insert into Vehicle values(1,'Activa',80000,10,35,'Two  wheeler. Sturdy.Milage 30 km');
+Query OK, 1 row affected (0.013 sec)
+
+MariaDB [DBMSBasic]> insert into Vehicle values(2,'Santro' ,95000,20,20,'Product of Hyandai.');
+Query OK, 1 row affected (0.007 sec)
+
+MariaDB [DBMSBasic]> insert into Vehicle values(3,'Yamaha',160000 ,5,70,'Sturdy and good milage');
+Query OK, 1 row affected (0.015 sec)
+
+MariaDB [DBMSBasic]> insert into Vehicle values(4,'i-10' ,300000 ,8,18,'Good small car');
+Query OK, 1 row affected (0.008 sec)
+
+MariaDB [DBMSBasic]> insert into Vehicle values(5,'WaganR',250000,10,25,'Good milage car');
+Query OK, 1 row affected (0.025 sec)
+
+MariaDB [DBMSBasic]> insert into Vehicle values(6,'Hero Splendor' ,75000,9,65,'Best bike');
+Query OK, 1 row affected (0.017 sec)
+
+MariaDB [DBMSBasic]> insert into Vehicle values(7,'Royal Enfild',190000,5,40,'a royal bike');
+Query OK, 1 row affected (0.008 sec)
+
+
+MariaDB [DBMSBasic]> select * from Vehicle;
++------+---------------+--------+----------+--------+-----------------------------------+
+| vid  | vname         | price  | discount | milage | details                           |
++------+---------------+--------+----------+--------+-----------------------------------+
+|    1 | Activa        |  80000 |       10 |     35 | Two  wheeler. Sturdy.Milage 30 km |
+|    2 | Santro        |  95000 |       20 |     20 | Product of Hyandai.               |
+|    3 | Yamaha        | 160000 |        5 |     70 | Sturdy and good milage            |
+|    4 | i-10          | 300000 |        8 |     18 | Good small car                    |
+|    5 | WaganR        | 250000 |       10 |     25 | Good milage car                   |
+|    6 | Hero Splendor |  75000 |        9 |     65 | Best bike                         |
+|    7 | Royal Enfild  | 190000 |        5 |     40 | a royal bike                      |
++------+---------------+--------+----------+--------+-----------------------------------+
+7 rows in set (0.001 sec)
+
+
+MariaDB [DBMSBasic]> create table Customer(cusid int,
+    -> cname varchar(20),
+    -> lacation varchar(20)
+    -> );
+Query OK, 0 rows affected (0.100 sec)
+
+
+
+insert into Customer values(1,'Nilima','Pimpri');
+insert into Customer values(2,'Ganesh','Pune');
+insert into Customer values(3,'Kishor','Kothrud');
+insert into Customer values(4,'Priya','Aundh');
+
+Query OK, 0 rows affected (0.100 sec)
+
+MariaDB [DBMSBasic]> insert into Customer values(1,'Nilima','Pimpri');
+Query OK, 1 row affected (0.017 sec)
+
+MariaDB [DBMSBasic]> insert into Customer values(2,'Ganesh','Pune');
+Query OK, 1 row affected (0.008 sec)
+
+MariaDB [DBMSBasic]> insert into Customer values(3,'Kishor','Kothrud');
+Query OK, 1 row affected (0.016 sec)
+
+MariaDB [DBMSBasic]> insert into Customer values(4,'Priya','Aundh');
+Query OK, 1 row affected (0.015 sec)
+
+
+
+MariaDB [DBMSBasic]> select * from Customer;
++-------+--------+----------+
+| cusid | cname  | lacation |
++-------+--------+----------+
+|     1 | Nilima | Pimpri   |
+|     2 | Ganesh | Pune     |
+|     3 | Kishor | Kothrud  |
+|     4 | Priya  | Aundh    |
++-------+--------+----------+
+4 rows in set (0.001 sec)
+
+
+ariaDB [DBMSBasic]> create table Salesman(
+    -> sid int,
+    -> sname varchar(20),
+    -> city varchar(20),
+    -> experience int
+    -> );
+Query OK, 0 rows affected (0.112 sec)
+
+
+
+insert into Salesman values(10,'Rajesh','mumbai',5);
+insert into Salesman values(11,'Seema','Pune',8);
+insert into Salesman values(12,'Shailesh','Nagpur',7);
+insert into Salesman values(13,'Rakhi','Pune',2);
+
+
+MariaDB [DBMSBasic]> insert into Salesman values(10,'Rajesh','mumbai',5);
+Query OK, 1 row affected (0.016 sec)
+
+MariaDB [DBMSBasic]> insert into Salesman values(11,'Seema','Pune',8);
+Query OK, 1 row affected (0.008 sec)
+
+MariaDB [DBMSBasic]> insert into Salesman values(12,'Shailesh','Nagpur',7);
+Query OK, 1 row affected (0.016 sec)
+
+MariaDB [DBMSBasic]> insert into Salesman values(13,'Rakhi','Pune',2);
+Query OK, 1 row affected (0.008 sec)
+
+
+MariaDB [DBMSBasic]> select * from Salesman;
++------+----------+--------+------------+
+| sid  | sname    | city   | experience |
++------+----------+--------+------------+
+|   10 | Rajesh   | mumbai |          5 |
+|   11 | Seema    | Pune   |          8 |
+|   12 | Shailesh | Nagpur |          7 |
+|   13 | Rakhi    | Pune   |          2 |
++------+----------+--------+------------+
+
+
+2] Display vid, vname, price and details from table vehicle with column heading as Vehicle id, vehicle name,price,discount and details.
+
+
+MariaDB [DBMSBasic]> select vid "Vehicle id",vname "vehicle name", price price,discount discount,details details from Vehicle;
++------------+---------------+--------+----------+-----------------------------------+
+| Vehicle id | vehicle name  | price  | discount | details                           |
++------------+---------------+--------+----------+-----------------------------------+
+|          1 | Activa        |  80000 |       10 | Two  wheeler. Sturdy.Milage 30 km |
+|          2 | Santro        |  95000 |       20 | Product of Hyandai.               |
+|          3 | Yamaha        | 160000 |        5 | Sturdy and good milage            |
+|          4 | i-10          | 300000 |        8 | Good small car                    |
+|          5 | WaganR        | 250000 |       10 | Good milage car                   |
+|          6 | Hero Splendor |  75000 |        9 | Best bike                         |
+|          7 | Royal Enfild  | 190000 |        5 | a royal bike                      |
++------------+---------------+--------+----------+-----------------------------------+
+7 rows in set (0.001 sec)
+
+3] Display names of salesmen who work in Pune.   
+
+MariaDB [DBMSBasic]> select sname from Salesman
+    -> where city='Pune';
++-------+
+| sname |
++-------+
+| Seema |
+| Rakhi |
++-------+
+
+4] Delete customer from Pimpri area.
+
+MariaDB [DBMSBasic]> delete from Customer  where lacation='Pimpri';
+Query OK, 1 row affected (0.025 sec)
+
+
+MariaDB [DBMSBasic]> select * from Customer;
++-------+--------+----------+
+| cusid | cname  | lacation |
++-------+--------+----------+
+|     2 | Ganesh | Pune     |
+|     3 | Kishor | Kothrud  |
+|     4 | Priya  | Aundh    |
++-------+--------+----------+
+3 rows in set (0.000 sec)
+
+
+5] Add some new customers
+  'Geeta' with custid 5 and area as 'Pimpri'.
+  'Raj' with custid 6 and area 'Aundh'
+  'Yash' with custid 7 and area 'Aundh'
+
+  ariaDB [DBMSBasic]> insert into Customer values(5,'Geeta','Pimpri');
+Query OK, 1 row affected (0.022 sec)
+
+MariaDB [DBMSBasic]>   insert into Customer values(6,'Raj','Aundh');
+Query OK, 1 row affected (0.042 sec)
+
+MariaDB [DBMSBasic]>   insert into Customer values(7,'Yash','Aundh');
+Query OK, 1 row affected (0.016 sec)
+
+MariaDB [DBMSBasic]> select * from Customer;
++-------+--------+----------+
+| cusid | cname  | lacation |
++-------+--------+----------+
+|     2 | Ganesh | Pune     |
+|     3 | Kishor | Kothrud  |
+|     4 | Priya  | Aundh    |
+|     5 | Geeta  | Pimpri   |
+|     6 | Raj    | Aundh    |
+|     7 | Yash   | Aundh    |
++-------+--------+----------+
+6 rows in set (0.001 sec)
+
+
+6] Display information of vehicle , Royal Enfild .
+    -> from Vehicle
+    -> where vname='Royal Enfild';
++------+--------------+--------+----------+--------+--------------+
+| vid  | vname        | price  | discount | milage | details      |
++------+--------------+--------+----------+--------+--------------+
+|    7 | Royal Enfild | 190000 |        5 |     40 | a royal bike |
++------+--------------+--------+----------+--------+--------------+
+1 row in set (0.001 sec)
+
+
+7] Display information of all Bikes.(Royal Enfild,Hero splender,Yahama)
+
+MariaDB [DBMSBasic]> select * from Vehicle
+    -> where vname in ('Royal Enfild',"Hero splendor",'Yamaha');
++------+---------------+--------+----------+--------+------------------------+
+| vid  | vname         | price  | discount | milage | details                |
++------+---------------+--------+----------+--------+------------------------+
+|    3 | Yamaha        | 160000 |        5 |     70 | Sturdy and good milage |
+|    6 | Hero Splendor |  75000 |        9 |     65 | Best bike              |
+|    7 | Royal Enfild  | 190000 |        5 |     40 | a royal bike           |
++------+---------------+--------+----------+--------+------------------------+
+3 rows in set (0.001 sec)
+
+8] List all vehicles with buying price  .>=160000 and  <=250000
+
+MariaDB [DBMSBasic]> select * from Vehicle 
+    -> where price between 160000 and  250000;
++------+--------------+--------+----------+--------+------------------------+
+| vid  | vname        | price  | discount | milage | details                |
++------+--------------+--------+----------+--------+------------------------+
+|    3 | Yamaha       | 160000 |        5 |     70 | Sturdy and good milage |
+|    5 | WaganR       | 250000 |       10 |     25 | Good milage car        |
+|    7 | Royal Enfild | 190000 |        5 |     40 | a royal bike           |
++------+--------------+--------+----------+--------+------------------------+
+3 rows in set (0.001 sec)
+
+9] Display vid, vname, price,details and total price for each vehicle.
+       total price = price - discount
+
+ MariaDB [DBMSBasic]> select vid,vname,price,details,price-discount "Total Price"
+    ->  from Vehicle;
++------+---------------+--------+-----------------------------------+-------------+
+| vid  | vname         | price  | details                           | Total Price |
++------+---------------+--------+-----------------------------------+-------------+
+|    1 | Activa        |  80000 | Two  wheeler. Sturdy.Milage 30 km |       79990 |
+|    2 | Santro        |  95000 | Product of Hyandai.               |       94980 |
+|    3 | Yamaha        | 160000 | Sturdy and good milage            |      159995 |
+|    4 | i-10          | 300000 | Good small car                    |      299992 |
+|    5 | WaganR        | 250000 | Good milage car                   |      249990 |
+|    6 | Hero Splendor |  75000 | Best bike                         |       74991 |
+|    7 | Royal Enfild  | 190000 | a royal bike                      |      189995 |
++------+---------------+--------+-----------------------------------+-------------+
+7 rows in set (0.001 sec)
+
+10] Display all the information of salesmen having experience more than 5 years.
+	MariaDB [DBMSBasic]> select * from Salesman
+    -> where experience>5;
++------+----------+--------+------------+
+| sid  | sname    | city   | experience |
++------+----------+--------+------------+
+|   11 | Seema    | Pune   |          8 |
+|   12 | Shailesh | Nagpur |          7 |
++------+----------+--------+------------+
+2 rows in set (0.001 sec)
+
+11] For the given schema, create the table and solve following queries
+employee(eno,ename,basic,incentives)
+
+create table Employee(
+eno int,
+ename varchar(20),
+basic int,
+incentives int
+);
+
+MariaDB [DBMSBasic]> create table Employee(
+    -> eno int,
+    -> ename varchar(20),
+    -> basic int,
+    -> incentives int
+    -> );
+Query OK, 0 rows affected (0.151 sec)
+
+
+insert into Employee values(1,'Rajesh',20000,1500);
+insert into Employee values(2,'Sarita',25000,1000);
+insert into Employee values(3,'Meera',15000,3000);
+insert into Employee values(4,'Jitesh',30000,500);
+insert into Employee values(5,'Ramesh',12000,3000);
+
+MariaDB [DBMSBasic]> insert into Employee values(1,'Rajesh',20000,1500);
+Query OK, 1 row affected (0.010 sec)
+
+MariaDB [DBMSBasic]> insert into Employee values(2,'Sarita',25000,1000);
+Query OK, 1 row affected (0.007 sec)
+
+MariaDB [DBMSBasic]> insert into Employee values(3,'Meera',15000,3000);
+Query OK, 1 row affected (0.016 sec)
+
+MariaDB [DBMSBasic]> insert into Employee values(4,'Jitesh',30000,500);
+Query OK, 1 row affected (0.008 sec)
+
+MariaDB [DBMSBasic]> insert into Employee values(5,'Ramesh',12000,3000);
+Query OK, 1 row affected (0.015 sec)
+
+
+MariaDB [DBMSBasic]> select * from Employee;
++------+--------+-------+------------+
+| eno  | ename  | basic | incentives |
++------+--------+-------+------------+
+|    1 | Rajesh | 20000 |       1500 |
+|    2 | Sarita | 25000 |       1000 |
+|    3 | Meera  | 15000 |       3000 |
+|    4 | Jitesh | 30000 |        500 |
+|    5 | Ramesh | 12000 |       3000 |
++------+--------+-------+------------+
+5 rows in set (0.001 sec)
+
+ 1. List all employees having basic>15000
+
+ MariaDB [DBMSBasic]> select * from Employee
+    ->  where basic>15000;
++------+--------+-------+------------+
+| eno  | ename  | basic | incentives |
++------+--------+-------+------------+
+|    1 | Rajesh | 20000 |       1500 |
+|    2 | Sarita | 25000 |       1000 |
+|    4 | Jitesh | 30000 |        500 |
++------+--------+-------+------------+
+3 rows in set (0.001 sec)
+
+
+ 2. New employee Ajay joins the firm. His eno is 20, basic is 16000 and he is not eligible for incentivies.  Store this information in table.
+
+  MariaDB [DBMSBasic]> insert into Employee values(20,'Ajay',16000,null);
+Query OK, 1 row affected (0.014 sec)
+
+MariaDB [DBMSBasic]> select * from Employee;
++------+--------+-------+------------+
+| eno  | ename  | basic | incentives |
++------+--------+-------+------------+
+|    1 | Rajesh | 20000 |       1500 |
+|    2 | Sarita | 25000 |       1000 |
+|    3 | Meera  | 15000 |       3000 |
+|    4 | Jitesh | 30000 |        500 |
+|    5 | Ramesh | 12000 |       3000 |
+|   20 | Ajay   | 16000 |       NULL |
++------+--------+-------+------------+
+6 rows in set (0.001 sec)
+
+
+ 3. Increase the salary of all employees earning less than 20000 basic by 5%.
+
+  MariaDB [DBMSBasic]> select eno,ename,basic,basic+(basic*0.05) "Increased Baisc"
+    ->   from Employee
+    ->   where basic<20000;
++------+--------+-------+-----------------+
+| eno  | ename  | basic | Increased Baisc |
++------+--------+-------+-----------------+
+|    3 | Meera  | 15000 |        15750.00 |
+|    5 | Ramesh | 12000 |        12600.00 |
+|   20 | Ajay   | 16000 |        16800.00 |
++------+--------+-------+-----------------+
+3 rows in set (0.001 sec)
+
+ 4. New employee Ajay joins the firm. His eno is 20, basic is 16000 and he is not eligible for incentivies.  Store this information in table.
+  MariaDB [DBMSBasic]> insert into Employee values(20,'Ajay',16000,null);
+Query OK, 1 row affected (0.014 sec)
+
+MariaDB [DBMSBasic]> select * from Employee;
++------+--------+-------+------------+
+| eno  | ename  | basic | incentives |
++------+--------+-------+------------+
+|    1 | Rajesh | 20000 |       1500 |
+|    2 | Sarita | 25000 |       1000 |
+|    3 | Meera  | 15000 |       3000 |
+|    4 | Jitesh | 30000 |        500 |
+|    5 | Ramesh | 12000 |       3000 |
+|   20 | Ajay   | 16000 |       NULL |
++------+--------+-------+------------+
+6 rows in set (0.001 sec)

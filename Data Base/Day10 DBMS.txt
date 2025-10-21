@@ -1,0 +1,1382 @@
+****************** Assignment -10 ******************
+
+1 2Write a function to calculate total salary of an employee. Call the function in the select
+clause.
+ total sal=sal+comm
+ 
+delimiter //
+drop function if exists calc_sal;
+create function calc_sal(sal float,comm float)returns float
+begin
+	declare tsal float;
+	set tsal=sal+ifnull(comm,0);
+	return tsal;
+end //
+delimiter ;
+
+select empno,ename,sal,comm,calc_sal(sal,comm) Total_sal
+from EMP;
+ 
+MariaDB [DBMSBasic]> delimiter //
+MariaDB [DBMSBasic]> drop function if exists calc_sal;
+    -> create function calc_sal(sal float,comm float)returns float
+    -> begin
+    -> declare tsal float;
+    -> set tsal=sal+ifnull(comm,0);
+    -> return tsal;
+    -> end //
+Query OK, 0 rows affected (0.044 sec)
+
+Query OK, 0 rows affected (0.086 sec)
+
+MariaDB [DBMSBasic]> delimiter ;
+MariaDB [DBMSBasic]> 
+MariaDB [DBMSBasic]> select empno,ename,sal,comm,calc_sal(sal,comm) Total_sal
+    -> from EMP;
++-------+--------+--------+------+-----------+
+| empno | ename  | sal    | comm | Total_sal |
++-------+--------+--------+------+-----------+
+|  7369 | SMITH  |    880 | NULL |       880 |
+|  7499 | ALLEN  |   1790 |  300 |      2090 |
+|  7521 | WARD   |   1425 |  500 |      1925 |
+|  7566 | JONES  | 3272.5 | NULL |    3272.5 |
+|  7654 | MARTIN |   1515 | 1400 |      2915 |
+|  7698 | BLAKE  |   3135 | NULL |      3135 |
+|  7782 | CLARK  |   2695 | NULL |      2695 |
+|  7788 | SCOTT  |   3300 | NULL |      3300 |
+|  7839 | KING   |   5500 | NULL |      5500 |
+|  7844 | TURNER |   1650 |    0 |      1650 |
+|  7876 | ADAMS  |   1210 | NULL |      1210 |
+|  7900 | JAMES  |   1045 | NULL |      1045 |
+|  7902 | FORD   |   3300 | NULL |      3300 |
+|  7934 | MILLER |   1430 | NULL |      1430 |
+|  7989 | john   |   1500 |  100 |      1600 |
+|  7990 | keem   |    300 |  200 |       500 |
+|  1111 | Geeta  |  10000 |  300 |     10300 |
+|  2222 | Raj    |   NULL | NULL |      NULL |
++-------+--------+--------+------+-----------+
+18 rows in set (0.001 sec)
+
+
+ 
+2] Write a function to generate an email. Call the function in select clause.
+email is generated as follows
+​​​​​first 2 letters of name + last 2 letters of job @knowit.com.
+
+delimiter //
+drop function if exists create_email;
+create function create_email(name varchar(10),job varchar(9)) returns varchar(20)
+begin
+	declare email varchar(20);
+	set email=concat(substr(name,1,2),substr(job,-2,2),"@knowit.com");
+	return email;
+end //
+delimiter ;
+
+
+select ename,job,create_email(ename,job) "Email"
+from EMP;
+
+MariaDB [DBMSBasic]> delimiter //
+MariaDB [DBMSBasic]> drop function if exists create_email;
+    -> create function create_email(name varchar(10),job varchar(9)) returns varchar(20)
+    -> begin
+    -> declare email varchar(20);
+    -> set email=concat(substr(name,1,2),substr(job,-2,2),"@knowit.com");
+    -> return email;
+    -> end //
+Query OK, 0 rows affected, 1 warning (0.000 sec)
+
+Query OK, 0 rows affected (0.047 sec)
+
+MariaDB [DBMSBasic]> delimiter ;
+MariaDB [DBMSBasic]> select ename,job,create_email(ename,job) "Email"
+    -> from EMP;
++--------+-----------+-----------------+
+| ename  | job       | Email           |
++--------+-----------+-----------------+
+| SMITH  | CLERK     | SMRK@knowit.com |
+| ALLEN  | SALESMAN  | ALAN@knowit.com |
+| WARD   | SALESMAN  | WAAN@knowit.com |
+| JONES  | MANAGER   | JOER@knowit.com |
+| MARTIN | SALESMAN  | MAAN@knowit.com |
+| BLAKE  | MANAGER   | BLER@knowit.com |
+| CLARK  | MANAGER   | CLER@knowit.com |
+| SCOTT  | ANALYST   | SCST@knowit.com |
+| KING   | PRESIDENT | KINT@knowit.com |
+| TURNER | SALESMAN  | TUAN@knowit.com |
+| ADAMS  | CLERK     | ADRK@knowit.com |
+| JAMES  | CLERK     | JARK@knowit.com |
+| FORD   | ANALYST   | FOST@knowit.com |
+| MILLER | CLERK     | MIRK@knowit.com |
+| john   | clerk     | jork@knowit.com |
+| keem   | MANAGER   | keER@knowit.com |
+| Geeta  | NULL      | NULL            |
+| Raj    | Analyst   | Rast@knowit.com |
++--------+-----------+-----------------+
+18 rows in set (0.001 sec)
+
+
+
+
+3] Write a procedure which accepts job as a in parameter .Write a function cal_sal() which
+calculates maximum salary for the job. Function should return maximum salary to the
+procedure. Print max sal out of the procedure.
+
+delimiter //
+drop function if exists calc_sal;
+create function calc_sal(j varchar(9)) returns float
+begin
+	declare msal float;
+	select max(sal) into msal from EMP group by job having job=j;
+	return msal;
+end //
+delimiter ;
+
+
+delimiter //
+drop procedure if exists max_sal;
+create procedure max_sal(in job varchar(9),out msal float)
+begin
+	set msal=calc_sal(job);
+end //
+delimiter ;
+
+MariaDB [DBMSBasic]> delimiter //
+MariaDB [DBMSBasic]> drop function if exists calc_sal;
+    -> create function calc_sal(j varchar(9)) returns float
+    -> begin
+    -> declare msal float;
+    -> select max(sal) into msal from EMP group by job having job=j;
+    -> return msal;
+    -> end //
+Query OK, 0 rows affected (0.040 sec)
+
+Query OK, 0 rows affected (0.081 sec)
+
+MariaDB [DBMSBasic]> delimiter ;
+MariaDB [DBMSBasic]> 
+MariaDB [DBMSBasic]> 
+MariaDB [DBMSBasic]> delimiter //
+MariaDB [DBMSBasic]> drop procedure if exists max_sal;
+    -> create procedure max_sal(in job varchar(9),out msal float)
+    -> begin
+    -> set msal=calc_sal(job);
+    -> end //
+Query OK, 0 rows affected (0.040 sec)
+
+Query OK, 0 rows affected (0.081 sec)
+
+MariaDB [DBMSBasic]> delimiter ;
+MariaDB [DBMSBasic]> set @job='clerk';
+Query OK, 0 rows affected (0.000 sec)
+
+MariaDB [DBMSBasic]> call max_sal(@job,@msal);
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [DBMSBasic]> select @msal;
++-------+
+| @msal |
++-------+
+|  1500 |
++-------+
+1 row in set (0.000 sec)
+
+
+
+
+4] Write a cursor which will list all rows having deptno 20;
+
+delimiter //
+drop procedure if exists cursord_displayall;
+create procedure cursor_displayall()
+begin
+	declare emn int;
+	declare en varchar(10);
+	declare j varchar(9);
+	declare s float;
+	declare dn int;
+	
+	declare flag int default 0;
+	
+	declare cursor1 cursor for
+	select empno,ename,job,sal,deptno
+	from EMP
+	where deptno=20;
+	
+	declare continue handler for 
+	not found set flag=1;
+	
+	open cursor1;
+		display:loop
+			fetch cursor1 into emn,en,j,s,dn;
+			if flag=1
+			then
+				leave display;
+			end if;
+			
+			select emn,en,j,s,dn;
+		end loop;
+	close cursor1;
+end //
+delimiter ;
+
+
+MariaDB [DBMSBasic]> delimiter //
+MariaDB [DBMSBasic]> drop procedure if exists cursord_displayall;
+    -> create procedure cursor_displayall()
+    -> begin
+    -> declare emn int;
+    -> declare en varchar(10);
+    -> declare j varchar(9);
+    -> declare s float;
+    -> declare dn int;
+    -> 
+    -> declare flag int default 0;
+    -> 
+    -> declare cursor1 cursor for
+    -> select empno,ename,job,sal,deptno
+    -> from EMP
+    -> where deptno=20;
+    -> 
+    -> declare continue handler for 
+    -> not found set flag=1;
+    -> 
+    -> open cursor1;
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> display:loop
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> fetch cursor1 into emn,en,j,s,dn;
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> if flag=1
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> then
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> leave display;
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> end if;
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> select emn,en,j,s,dn;
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> end loop;
+    -> close cursor1;
+    -> end //
+Query OK, 0 rows affected, 1 warning (0.000 sec)
+
+Query OK, 0 rows affected (0.060 sec)
+
+MariaDB [DBMSBasic]> delimiter ;
+MariaDB [DBMSBasic]> call cursor_displayall;
++------+-------+-------+------+------+
+| emn  | en    | j     | s    | dn   |
++------+-------+-------+------+------+
+| 7369 | SMITH | CLERK |  880 |   20 |
++------+-------+-------+------+------+
+1 row in set (0.001 sec)
+
++------+-------+---------+--------+------+
+| emn  | en    | j       | s      | dn   |
++------+-------+---------+--------+------+
+| 7566 | JONES | MANAGER | 3272.5 |   20 |
++------+-------+---------+--------+------+
+1 row in set (0.002 sec)
+
++------+-------+---------+------+------+
+| emn  | en    | j       | s    | dn   |
++------+-------+---------+------+------+
+| 7788 | SCOTT | ANALYST | 3300 |   20 |
++------+-------+---------+------+------+
+1 row in set (0.002 sec)
+
++------+-------+-------+------+------+
+| emn  | en    | j     | s    | dn   |
++------+-------+-------+------+------+
+| 7876 | ADAMS | CLERK | 1210 |   20 |
++------+-------+-------+------+------+
+1 row in set (0.002 sec)
+
++------+------+---------+------+------+
+| emn  | en   | j       | s    | dn   |
++------+------+---------+------+------+
+| 7902 | FORD | ANALYST | 3300 |   20 |
++------+------+---------+------+------+
+1 row in set (0.002 sec)
+
++------+-------+------+-------+------+
+| emn  | en    | j    | s     | dn   |
++------+-------+------+-------+------+
+| 1111 | Geeta | NULL | 10000 |   20 |
++------+-------+------+-------+------+
+1 row in set (0.002 sec)
+
+Query OK, 0 rows affected (0.002 sec)
+
+
+
+5] Write a cursor to increment salary as follows
+     Clerk 10 % rise
+     Manager 5% rise
+     Analyst 7% rise.
+    No rise given for other jobs.
+    
+delimiter //
+drop procedure if exists increment_sal;
+create procedure increment_sal()
+begin
+	declare emn int;
+	declare en varchar(10);
+	declare j varchar(9);
+	declare s float;
+	declare isal float;
+	
+	declare flag int default 0;
+	
+	declare cursor1 cursor for
+	select empno,ename,job,sal,case job
+	when 'clerk' then sal+(sal*0.10) 
+	when 'manager' then sal+(sal*0.05) 
+	when 'analyst' then sal+(sal*0.07) 
+	else sal
+	end "increase_sal"
+	from EMP;
+	
+	declare continue handler for
+	not found set flag=1;
+	
+	open cursor1;
+		display:loop
+			fetch cursor1 into emn,en,j,s,isal;
+			if flag=1
+			then
+				leave display;
+			end if;
+			select emn,en,j,s,isal;
+		end loop;
+	close cursor1;
+end //
+delimiter ;
+
+
+MariaDB [DBMSBasic]> delimiter //
+MariaDB [DBMSBasic]> drop procedure if exists increment_sal;
+    -> create procedure increment_sal()
+    -> begin
+    -> declare emn int;
+    -> declare en varchar(10);
+    -> declare j varchar(9);
+    -> declare s float;
+    -> declare isal float;
+    -> 
+    -> declare flag int default 0;
+    -> 
+    -> declare cursor1 cursor for
+    -> select empno,ename,job,sal,case job
+    -> when 'clerk' then sal+(sal*0.10) 
+    -> when 'manager' then sal+(sal*0.05) 
+    -> when 'analyst' then sal+(sal*0.07) 
+    -> else sal
+    -> end "increase_sal"
+    -> from EMP;
+    -> 
+    -> declare continue handler for
+    -> not found set flag=1;
+    -> 
+    -> open cursor1;
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> display:loop
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> fetch cursor1 into emn,en,j,s,isal;
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> if flag=1
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> then
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> leave display;
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> end if;
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> select emn,en,j,s,isal;
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> end loop;
+    -> close cursor1;
+    -> end //
+Query OK, 0 rows affected, 1 warning (0.000 sec)
+
+Query OK, 0 rows affected (0.054 sec)
+
+MariaDB [DBMSBasic]> delimiter ;
+MariaDB [DBMSBasic]> call increment_sal;
++------+-------+-------+------+------+
+| emn  | en    | j     | s    | isal |
++------+-------+-------+------+------+
+| 7369 | SMITH | CLERK |  880 |  968 |
++------+-------+-------+------+------+
+1 row in set (0.002 sec)
+
++------+-------+----------+------+------+
+| emn  | en    | j        | s    | isal |
++------+-------+----------+------+------+
+| 7499 | ALLEN | SALESMAN | 1790 | 1790 |
++------+-------+----------+------+------+
+1 row in set (0.002 sec)
+
++------+------+----------+------+------+
+| emn  | en   | j        | s    | isal |
++------+------+----------+------+------+
+| 7521 | WARD | SALESMAN | 1425 | 1425 |
++------+------+----------+------+------+
+1 row in set (0.002 sec)
+
++------+-------+---------+--------+---------+
+| emn  | en    | j       | s      | isal    |
++------+-------+---------+--------+---------+
+| 7566 | JONES | MANAGER | 3272.5 | 3436.12 |
++------+-------+---------+--------+---------+
+1 row in set (0.002 sec)
+
++------+--------+----------+------+------+
+| emn  | en     | j        | s    | isal |
++------+--------+----------+------+------+
+| 7654 | MARTIN | SALESMAN | 1515 | 1515 |
++------+--------+----------+------+------+
+1 row in set (0.002 sec)
+
++------+-------+---------+------+---------+
+| emn  | en    | j       | s    | isal    |
++------+-------+---------+------+---------+
+| 7698 | BLAKE | MANAGER | 3135 | 3291.75 |
++------+-------+---------+------+---------+
+1 row in set (0.002 sec)
+
++------+-------+---------+------+---------+
+| emn  | en    | j       | s    | isal    |
++------+-------+---------+------+---------+
+| 7782 | CLARK | MANAGER | 2695 | 2829.75 |
++------+-------+---------+------+---------+
+1 row in set (0.002 sec)
+
++------+-------+---------+------+------+
+| emn  | en    | j       | s    | isal |
++------+-------+---------+------+------+
+| 7788 | SCOTT | ANALYST | 3300 | 3531 |
++------+-------+---------+------+------+
+1 row in set (0.002 sec)
+
++------+------+-----------+------+------+
+| emn  | en   | j         | s    | isal |
++------+------+-----------+------+------+
+| 7839 | KING | PRESIDENT | 5500 | 5500 |
++------+------+-----------+------+------+
+1 row in set (0.002 sec)
+
++------+--------+----------+------+------+
+| emn  | en     | j        | s    | isal |
++------+--------+----------+------+------+
+| 7844 | TURNER | SALESMAN | 1650 | 1650 |
++------+--------+----------+------+------+
+1 row in set (0.002 sec)
+
++------+-------+-------+------+------+
+| emn  | en    | j     | s    | isal |
++------+-------+-------+------+------+
+| 7876 | ADAMS | CLERK | 1210 | 1331 |
++------+-------+-------+------+------+
+1 row in set (0.003 sec)
+
++------+-------+-------+------+--------+
+| emn  | en    | j     | s    | isal   |
++------+-------+-------+------+--------+
+| 7900 | JAMES | CLERK | 1045 | 1149.5 |
++------+-------+-------+------+--------+
+1 row in set (0.003 sec)
+
++------+------+---------+------+------+
+| emn  | en   | j       | s    | isal |
++------+------+---------+------+------+
+| 7902 | FORD | ANALYST | 3300 | 3531 |
++------+------+---------+------+------+
+1 row in set (0.003 sec)
+
++------+--------+-------+------+------+
+| emn  | en     | j     | s    | isal |
++------+--------+-------+------+------+
+| 7934 | MILLER | CLERK | 1430 | 1573 |
++------+--------+-------+------+------+
+1 row in set (0.003 sec)
+
++------+------+-------+------+------+
+| emn  | en   | j     | s    | isal |
++------+------+-------+------+------+
+| 7989 | john | clerk | 1500 | 1650 |
++------+------+-------+------+------+
+1 row in set (0.003 sec)
+
++------+------+---------+------+------+
+| emn  | en   | j       | s    | isal |
++------+------+---------+------+------+
+| 7990 | keem | MANAGER |  300 |  315 |
++------+------+---------+------+------+
+1 row in set (0.003 sec)
+
++------+-------+------+-------+-------+
+| emn  | en    | j    | s     | isal  |
++------+-------+------+-------+-------+
+| 1111 | Geeta | NULL | 10000 | 10000 |
++------+-------+------+-------+-------+
+1 row in set (0.003 sec)
+
++------+------+---------+------+------+
+| emn  | en   | j       | s    | isal |
++------+------+---------+------+------+
+| 2222 | Raj  | Analyst | NULL | NULL |
++------+------+---------+------+------+
+1 row in set (0.003 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
+
+
+6] Pass job as a parameter to procedure and display all employees working
+​​​​​​​for the specified job using cursor.
+
+delimiter //
+drop procedure if exists display_emp;
+create procedure display_emp(in j varchar(9))
+begin 
+	declare emn int;
+	declare en varchar(10);
+	declare jb varchar(9);
+	declare s float;
+	declare c float;
+	declare dn int;
+	
+	declare flag int default 0;
+	
+	declare cursor1 cursor for
+	select empno,ename,job,sal,comm,deptno
+	from EMP
+	where job=j;
+	
+	declare continue handler for
+	not found set flag=1;
+	
+	open cursor1;
+	display:loop
+		fetch cursor1 into emn,en,jb,s,c,dn;
+		if flag=1
+		then 
+			leave display;
+		end if;
+		select emn,en,jb,s,c,dn;
+	end loop;
+	close cursor1;
+end //
+delimiter ;
+
+
+MariaDB [DBMSBasic]> delimiter //
+MariaDB [DBMSBasic]> drop procedure if exists display_emp;
+    -> create procedure display_emp(in j varchar(9))
+    -> begin 
+    -> declare emn int;
+    -> declare en varchar(10);
+    -> declare jb varchar(9);
+    -> declare s float;
+    -> declare c float;
+    -> declare dn int;
+    -> 
+    -> declare flag int default 0;
+    -> 
+    -> declare cursor1 cursor for
+    -> select empno,ename,job,sal,comm,deptno
+    -> from EMP
+    -> where job=j;
+    -> 
+    -> declare continue handler for
+    -> not found set flag=1;
+    -> 
+    -> open cursor1;
+    -> display:loop
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> fetch cursor1 into emn,en,jb,s,c,dn;
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> if flag=1
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> then 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> leave display;
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> end if;
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> select emn,en,jb,s,c,dn;
+    -> end loop;
+    -> close cursor1;
+    -> end //
+Query OK, 0 rows affected (0.065 sec)
+
+Query OK, 0 rows affected (0.115 sec)
+
+MariaDB [DBMSBasic]> delimiter ;
+MariaDB [DBMSBasic]> set @job='clerk';
+Query OK, 0 rows affected (0.000 sec)
+
+MariaDB [DBMSBasic]> call display_emp(@job);
++------+-------+-------+------+------+------+
+| emn  | en    | jb    | s    | c    | dn   |
++------+-------+-------+------+------+------+
+| 7369 | SMITH | CLERK |  880 | NULL |   20 |
++------+-------+-------+------+------+------+
+1 row in set (0.001 sec)
+
++------+-------+-------+------+------+------+
+| emn  | en    | jb    | s    | c    | dn   |
++------+-------+-------+------+------+------+
+| 7876 | ADAMS | CLERK | 1210 | NULL |   20 |
++------+-------+-------+------+------+------+
+1 row in set (0.002 sec)
+
++------+-------+-------+------+------+------+
+| emn  | en    | jb    | s    | c    | dn   |
++------+-------+-------+------+------+------+
+| 7900 | JAMES | CLERK | 1045 | NULL |   30 |
++------+-------+-------+------+------+------+
+1 row in set (0.002 sec)
+
++------+--------+-------+------+------+------+
+| emn  | en     | jb    | s    | c    | dn   |
++------+--------+-------+------+------+------+
+| 7934 | MILLER | CLERK | 1430 | NULL |   10 |
++------+--------+-------+------+------+------+
+1 row in set (0.002 sec)
+
++------+------+-------+------+------+------+
+| emn  | en   | jb    | s    | c    | dn   |
++------+------+-------+------+------+------+
+| 7989 | john | clerk | 1500 |  100 |   80 |
++------+------+-------+------+------+------+
+1 row in set (0.002 sec)
+
+Query OK, 0 rows affected (0.002 sec)
+
+
+7] Copy table emp as emp_new
+Add new column ‘award’ in emp_new.
+Write a cursor which will update award column as ‘YES’ if employee has experience > 42 years
+And ‘NO’ if employee has experience <= 42 years . Use cursor.
+
+create table emp_new
+as
+select * from EMP;
+
+alter table emp_new
+add award varchar(10);
+
+delimiter //
+drop procedure if exists award_emp;
+create procedure award_emp()
+begin
+	declare emn int;
+	declare hdate date;
+	
+	declare flag int default 0;
+	
+	declare cursor2 cursor for
+	select empno,hiredate
+	from emp_new;
+	
+	declare continue handler for
+	not found set flag=1;
+	
+	open cursor2;
+	
+		display:loop
+			fetch cursor2 into emn,hdate;
+			if flag=1
+			then 
+				leave display;
+			end if;
+			
+			if(year(curdate())-year(hdate))>42
+			then
+				update emp_new
+				set award='Yes'
+				where empno=emn;
+			elseif (year(curdate())-year(hdate))<=42
+			then 
+				update emp_new
+				set award='No'
+				where empno=emn;
+			end if;
+		end loop;
+		
+		
+	close cursor2;
+end //
+delimiter ;
+
+
+
+MariaDB [DBMSBasic]> delimiter //
+MariaDB [DBMSBasic]> drop procedure if exists award_emp;
+    -> create procedure award_emp()
+    -> begin
+    -> declare emn int;
+    -> declare hdate date;
+    -> 
+    -> declare flag int default 0;
+    -> 
+    -> declare cursor2 cursor for
+    -> select empno,hiredate
+    -> from emp_new;
+    -> 
+    -> declare continue handler for
+    -> not found set flag=1;
+    -> 
+    -> open cursor2;
+    -> 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> display:loop
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> fetch cursor2 into emn,hdate;
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> if flag=1
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> then 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> leave display;
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> end if;
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> if(year(curdate())-year(hdate))>42
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> then
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> update emp_new
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> set award='Yes'
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> where empno=emn;
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> elseif (year(curdate())-year(hdate))<=42
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> then 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> update emp_new
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> set award='No'
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> where empno=emn;
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> end if;
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> end loop;
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+    -> 
+Display all 974 possibilities? (y or n) 
+    -> 
+    -> close cursor2;
+    -> end //
+Query OK, 0 rows affected (0.093 sec)
+
+Query OK, 0 rows affected (0.143 sec)
+
+MariaDB [DBMSBasic]> delimiter ;
+MariaDB [DBMSBasic]> call award_emp;
+Query OK, 16 rows affected (0.165 sec)
+
+MariaDB [DBMSBasic]> select * from emp_new;
++-------+--------+-----------+------+------------+--------+------+--------+-------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO | award |
++-------+--------+-----------+------+------------+--------+------+--------+-------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 | Yes   |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |   1790 |  300 |     30 | Yes   |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |   1425 |  500 |     30 | Yes   |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 | Yes   |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |   1515 | 1400 |     30 | Yes   |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 | Yes   |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 | Yes   |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 | Yes   |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 | Yes   |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 | Yes   |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 | No    |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 | Yes   |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 | Yes   |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 | Yes   |
+|  7989 | john   | clerk     | 7902 | 1980-04-24 |   1500 |  100 |     80 | Yes   |
+|  7990 | keem   | MANAGER   | 7839 | 1982-06-24 |    300 |  200 |   NULL | Yes   |
+|  1111 | Geeta  | NULL      | NULL | NULL       |  10000 |  300 |     20 | NULL  |
+|  2222 | Raj    | Analyst   | NULL | NULL       |   NULL | NULL |     40 | NULL  |
++-------+--------+-----------+------+------------+--------+------+--------+-------+
+18 rows in set (0.001 sec)
+
+
+
+8] Consider following tables
+    product(pid,pname,price,qty)
+    product_details(pid,amt)
+    amt =price * qty
+Write a trigger which will calculate amt every time any update is done in the price of an item.
+
+
+-- Create the product table
+CREATE TABLE product (
+    pid INT PRIMARY KEY,
+    pname VARCHAR(50),
+    price DECIMAL(10, 2),
+    qty INT
+);
+
+-- Insert records into the product table
+INSERT INTO product (pid, pname, price, qty) VALUES
+(101, 'Laptop', 75000.00, 50),
+(102, 'Mouse', 800.00, 150),
+(103, 'Keyboard', 2500.00, 100),
+(104, 'Monitor', 12000.00, 75),
+(105, 'Headset', 1500.00, 200);
+
+-- Create the product_details table with a foreign key
+CREATE TABLE product_details (
+    pid INT ,
+    amt DECIMAL(15, 2)
+);
+
+-- Insert records into the product_details table
+INSERT INTO product_details (pid, amt) VALUES
+(101, 3750000.00), -- 75000 * 50
+(102, 120000.00),  -- 800 * 150
+(103, 250000.00),  -- 2500 * 100
+(104, 900000.00),  -- 12000 * 75
+(105, 300000.00);  -- 1500 * 200
+
+delimiter //
+drop trigger if exists before_update_data;
+create trigger before_update_data
+before update
+on product
+for each row
+begin
+	insert into product_details values(old.pid,new.price*new.qty);
+end //
+delimiter ;
+
+update product
+set price=1000.00,qty=200
+where pid=102;
+
+
+MariaDB [DBMSBasic]> delimiter //
+MariaDB [DBMSBasic]> drop trigger if exists before_update_data;
+    -> create trigger before_update_data
+    -> before update
+    -> on product
+    -> for each row
+    -> begin
+    -> insert into product_details values(old.pid,new.price*new.qty);
+    -> end //
+Query OK, 0 rows affected (0.031 sec)
+
+Query OK, 0 rows affected (0.120 sec)
+
+MariaDB [DBMSBasic]> delimiter ;
+MariaDB [DBMSBasic]> select * from product;
++-----+----------+----------+------+
+| pid | pname    | price    | qty  |
++-----+----------+----------+------+
+| 101 | Laptop   | 75000.00 |   50 |
+| 102 | Mouse    |   900.00 |  200 |
+| 103 | Keyboard |  2500.00 |  100 |
+| 104 | Monitor  | 12000.00 |   75 |
+| 105 | Headset  |  1500.00 |  200 |
++-----+----------+----------+------+
+5 rows in set (0.001 sec)
+
+MariaDB [DBMSBasic]> select * from product_details;
++------+------------+
+| pid  | amt        |
++------+------------+
+|  101 | 3750000.00 |
+|  102 |  120000.00 |
+|  103 |  250000.00 |
+|  104 |  900000.00 |
+|  105 |  300000.00 |
+|  102 |  180000.00 |
++------+------------+
+6 rows in set (0.001 sec)
+
+MariaDB [DBMSBasic]> update product
+    -> set price=1000.00,qty=200
+    -> where pid=102;
+Query OK, 1 row affected (0.045 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [DBMSBasic]> select * from product;
++-----+----------+----------+------+
+| pid | pname    | price    | qty  |
++-----+----------+----------+------+
+| 101 | Laptop   | 75000.00 |   50 |
+| 102 | Mouse    |  1000.00 |  200 |
+| 103 | Keyboard |  2500.00 |  100 |
+| 104 | Monitor  | 12000.00 |   75 |
+| 105 | Headset  |  1500.00 |  200 |
++-----+----------+----------+------+
+5 rows in set (0.001 sec)
+
+MariaDB [DBMSBasic]> select * from product_details;
++------+------------+
+| pid  | amt        |
++------+------------+
+|  101 | 3750000.00 |
+|  102 |  120000.00 |
+|  103 |  250000.00 |
+|  104 |  900000.00 |
+|  105 |  300000.00 |
+|  102 |  180000.00 |
+|  102 |  200000.00 |
++------+------------+
+7 rows in set (0.001 sec)
+
+
+
+9] Consider following table
+   emp_wage (eno, ename ,sal,over_time)
+   eno : pk auto inc
+Write a trigger which will insert over_time as 400 if value over_time entered is null.
+
+CREATE TABLE emp_wage (
+    eno INT PRIMARY KEY AUTO_INCREMENT,
+    ename VARCHAR(50),
+    sal DECIMAL(10, 2),
+    over_time INT
+);
+
+INSERT INTO emp_wage (ename, sal, over_time) VALUES
+('Ramesh', 50000.00, 10),
+('Suresh', 65000.00, 15),
+('Geeta', 55000.00, 8),
+('Priya', 70000.00, 20),
+('Mohan', 60000.00, 12);
+
+
+
+
+DELIMITER //
+
+DROP TRIGGER IF EXISTS over_time;
+
+CREATE TRIGGER over_time
+BEFORE INSERT ON emp_wage
+FOR EACH ROW
+BEGIN
+    IF NEW.over_time IS NULL THEN
+        SET NEW.over_time = 400;
+    END IF;
+END //
+
+DELIMITER ;
+
+INSERT INTO emp_wage (ename, sal, over_time)values ('ram',55000.00,null);
+
+# eno	ename	sal	over_time
+1	Ramesh	50000.00	10
+2	Suresh	65000.00	15
+3	Geeta	55000.00	8
+4	Priya	70000.00	20
+5	Mohan	60000.00	12
+6	ram	55000.00	400
+
+
+
+10] Consider following table
+      order_master(oid,pname,qty,price)
+      oid : pk auto inc
+      order_log(oid,odate,amt)
+Write a trigger which will create a log of all orders once order is placed.
+
+
+CREATE TABLE order_master (
+    oid INT AUTO_INCREMENT PRIMARY KEY,
+    pname VARCHAR(100) NOT NULL,
+    qty INT NOT NULL,
+    price DECIMAL(10,2) NOT NULL
+);
+
+
+CREATE TABLE order_log (
+    oid INT,
+    odate DATE NOT NULL,
+    amt DECIMAL(10,2) NOT NULL,
+ 
+);
+
+
+DELIMITER //
+DROP TRIGGER IF EXISTS order_trigger;
+CREATE TRIGGER order_trigger 
+AFTER INSERT
+ON order_master
+FOR EACH ROW
+BEGIN
+	INSERT INTO order_log VALUES(new.oid,curdate(),new.price*new.qty);
+END //
+DELIMITER ;
+
+
+INSERT INTO order_master (pname, qty, price)
+VALUES ('Mobile', 3, 15000),('Laptop', 2, 55000),('Headphones', 5, 2500),('Smartwatch', 4, 8000);
+
+
+select * from order_master;
+
+select * from order_log;
+
+# oid	pname	qty	price
+1	Mobile	3	15000.00
+2	Laptop	2	55000.00
+3	Headphones	5	2500.00
+4	Smartwatch	4	8000.00
+
+
+# oid	odate	amt
+1	2025-09-22	45000.00
+2	2025-09-22	110000.00
+3	2025-09-22	12500.00
+4	2025-09-22	32000.00
+
+
+
+11] Consider following table
+      cust_master(cid,cname,accno,city)
+     cust_details(cid,deleted_date)
+Write a trigger which will save the information of deleted customer in cust_details table. 
+
+
+CREATE TABLE cust_master (
+    cid INT AUTO_INCREMENT PRIMARY KEY,
+    cname VARCHAR(100) NOT NULL,
+    accno VARCHAR(20) UNIQUE NOT NULL,
+    city VARCHAR(50) NOT NULL
+);
+
+
+CREATE TABLE cust_details (
+    cid INT,
+    deleted_date DATE NOT NULL
+   );
+
+
+INSERT INTO cust_master (cname, accno, city)
+VALUES 
+('Ravi Kumar', 'AC1001', 'Pune'),
+('Meena Sharma', 'AC1002', 'Mumbai'),
+('Arjun Patil', 'AC1003', 'Delhi'),
+('Sneha Joshi', 'AC1004', 'Bengaluru'),
+('Karan Singh', 'AC1005', 'Hyderabad');
+
+
+DELIMITER //
+DROP TRIGGER IF EXISTS cust_trigger
+CREATE TRIGGER cust_trigger
+BEFORE DELETE
+ON cust_master
+FOR EACH ROW
+BEGIN
+	INSERT INTO cust_details VALUES(OLD.cid,curdate());
+END //
+DELIMITER ;
+
+DELETE FROM cust_master WHERE cid=2;
+
+select * from cust_master;
+
+select * from cust_details;
+
+
+# cid	cname	accno	city
+1	Ravi Kumar	AC1001	Pune
+3	Arjun Patil	AC1003	Delhi
+4	Sneha Joshi	AC1004	Bengaluru
+5	Karan Singh	AC1005	Hyderabad
+
+
+# cid	deleted_date
+2	2025-09-22
+
+
+
+13] Send any number to the procedure. Pass this number to the function. Function should return 1 if the number is prime or 0 if the number is not prime. Return value to the procedure. And display 1 or 0.
+
+DELIMITER //
+
+DROP FUNCTION IF EXISTS isPrime;
+
+CREATE FUNCTION isPrime(N INT) RETURNS INT
+DETERMINISTIC
+BEGIN
+    DECLARE i INT DEFAULT 2;
+
+    WHILE i <= N / 2 DO
+        IF N % i = 0 THEN
+            RETURN 0;
+        END IF;
+        SET i = i + 1;
+    END WHILE;
+
+    RETURN 1;
+END //
+
+DELIMITER ;
+	
+
+
+DELIMITER //
+
+DROP PROCEDURE IF EXISTS prime_test;
+
+CREATE PROCEDURE prime_test(IN n INT)
+BEGIN
+    DECLARE res INT;
+    SET res = isPrime(n);
+    SELECT res ;
+END //
+
+DELIMITER ;
+
+set @n=15;
+call prime_test(@n);
+
+# res
+0
+
+
+set @n=13;
+call prime_test(@n);
+# res
+1
+
+
+
+
+Mixed queries …if time permits
+ 
+1] The HR department wants to know the names of all the employees who were hired after Blake. Create a query to display the name and hire date of any employee hired after employee  Blake.
+
+select *
+from EMP
+where hiredate>(select hiredate from EMP where ename='blake');
+
+# EMPNO	ENAME	JOB	MGR	HIREDATE	SAL	COMM	DEPTNO
+7654	MARTIN	SALESMAN	7698	1981-09-28	1375	1400	30
+7782	CLARK	MANAGER	7839	1981-06-09	2695		10
+7788	SCOTT	ANALYST	7566	1982-12-09	3300		20
+7839	KING	PRESIDENT		1981-11-17	5500		10
+7844	TURNER	SALESMAN	7698	1981-09-08	1650	0	30
+7876	ADAMS	CLERK	7788	1983-01-12	1210		20
+7900	JAMES	CLERK	7698	1981-12-03	1045		30
+7902	FORD	ANALYST	7566	1981-12-03	3300		20
+7934	MILLER	CLERK	7782	1982-01-23	1430		10
+
+
+
+2] Write a query to get  year, and number of employees joined each year.
+
+select distinct year(hiredate), count(*)
+from EMP
+group by year(hiredate);
+
+
+# year(hiredate)	count(*)
+1980	       		1
+1981			10
+1982			2
+1983			1
+
+
+3] Write a query to display all employees with experience more than 43 years.
+
+select * from EMP
+where year(curdate())-year(hiredate)>43;
+
+
+# EMPNO	ENAME	JOB	MGR	HIREDATE	SAL	COMM	DEPTNO
+7369	SMITH	CLERK	7902	1980-12-17	880		20
+7499	ALLEN	SALESMAN	7698	1981-02-20	1760	300	30
+7521	WARD	SALESMAN	7698	1981-02-22	1375	500	30
+7566	JONES	MANAGER	7839	1981-04-02	3272.5		20
+7654	MARTIN	SALESMAN	7698	1981-09-28	1375	1400	30
+7698	BLAKE	MANAGER	7839	1981-05-01	3135		30
+7782	CLARK	MANAGER	7839	1981-06-09	2695		10
+7839	KING	PRESIDENT		1981-11-17	5500		10
+7844	TURNER	SALESMAN	7698	1981-09-08	1650	0	30
+7900	JAMES	CLERK	7698	1981-12-03	1045		30
+7902	FORD	ANALYST	7566	1981-12-03	3300		20
+
+
+4] Display 3rd highest salary.
+
+select e1.sal
+from EMP e1
+where 2=(select count(distinct sal) from EMP e2 where e1.sal<e2.sal)
+
+# sal
+3272.5
+
+
+5] Write a query which will display all employees working in sales department.
+
+select * from EMP
+where deptno=(select deptno from DEPT where dname='sales');
+
+# EMPNO	ENAME	JOB	MGR	HIREDATE	SAL	COMM	DEPTNO
+7499	ALLEN	SALESMAN	7698	1981-02-20	1760	300	30
+7521	WARD	SALESMAN	7698	1981-02-22	1375	500	30
+7654	MARTIN	SALESMAN	7698	1981-09-28	1375	1400	30
+7698	BLAKE	MANAGER	7839	1981-05-01	3135		30
+7844	TURNER	SALESMAN	7698	1981-09-08	1650	0	30
+7900	JAMES	CLERK	7698	1981-12-03	1045		30
+
+
+
+6] Write a query to display year if more than 2 employees are hired in that year.
+
+select distinct year(e.hiredate) from EMP e 
+	where 2<(select count(year(e2.hiredate))
+		from EMP e2 
+		where year(e.hiredate)=year(e2.hiredate)); 
+
+SELECT YEAR(hiredate) AS hire_year, COUNT(*) AS emp_count
+FROM EMP
+GROUP BY YEAR(hiredate)
+HAVING COUNT(*) > 2;
+
+
+# hire_year	emp_count
+1981	10
+

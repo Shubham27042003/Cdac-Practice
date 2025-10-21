@@ -1,0 +1,680 @@
+Create following tables and solve the queries
+
+create table category(
+       cid int primary key,
+       cname varchar (15) unique not null,
+       description varchar (30)     
+     );
+
+create table salesman
+(
+   sid int primary key,
+   sname varchar (15) unique not null,
+   city varchar (15)
+);
+
+create table Product(
+   pid  int primary key,
+   pname varchar (20),
+   price float (6,2) default 20.00,
+   qty int check(qty>0),
+   cat_id int,
+   sals_id int,
+   constraint fk_cidnew foreign key(cat_id) references category(cid),  
+   constraint fk_sidnew foreign key(sals_id) references salesman(sid)  
+   );
+   
+   
+insert into category values(1,'chips','very crunchy'),(2,'chocolate','very chocolaty'),(3,'snacks','yummy'),(4,'cold drinks','thanda thanda cool cool');
+
+insert into salesman values(11,'Rahul','Pune'),(12,'Kirti','Mumbai'),(13,'Prasad','Nashik'),(14,'Arnav','Amravati');
+
+
+insert into Product values(123,'lays',30,30.00,1,12),(111,'pepsi',40,50.00,4,11),(134,'nachos',50,50.00,1,12),(124,'dairy milk',40,60.00,2,14),(125,'pringles',40,60.00,1,14),(213,'Sketch Pens',56,150.00,null,11),(167,'eraser',90,5.00,null,null);
+
+
+1. List all pid,pname,cid,cname  with category chips
+ MariaDB [DBMSBasic]> select p.pid,p.pname,c.cid,c.cname
+    ->  from Product p,category c
+    ->  where p.cat_id=c.cid and c.cname='chips';
++-----+----------+-----+-------+
+| pid | pname    | cid | cname |
++-----+----------+-----+-------+
+| 123 | lays     |   1 | chips |
+| 125 | pringles |   1 | chips |
+| 134 | nachos   |   1 | chips |
++-----+----------+-----+-------+
+3 rows in set (0.001 sec)
+
+
+ 
+2. Display all products sold by kirti
+
+MariaDB [DBMSBasic]> select *
+    -> from Product
+    -> where sals_id=(
+    -> select sid
+    -> from salesman
+    -> where sname='kirti');
++-----+--------+-------+------+--------+---------+
+| pid | pname  | price | qty  | cat_id | sals_id |
++-----+--------+-------+------+--------+---------+
+| 123 | lays   | 30.00 |   30 |      1 |      12 |
+| 134 | nachos | 50.00 |   50 |      1 |      12 |
++-----+--------+-------+------+--------+---------+
+2 rows in set (0.001 sec)
+
+
+3. Display all salesmen who did not sell any product
+MariaDB [DBMSBasic]> select *
+    -> from salesman
+    -> where sid not IN (select distinct sals_id from Product where sals_id is not null);
++-----+--------+--------+
+| sid | sname  | city   |
++-----+--------+--------+
+|  13 | Prasad | Nashik |
++-----+--------+--------+
+1 row in set (0.001 sec)
+
+
+
+4. Display all category for which no product is assigned
+	MariaDB [DBMSBasic]> select *
+    -> from category
+    -> where cid not in (select distinct cat_id from Product where cat_id is not null);
++-----+--------+-------------+
+| cid | cname  | description |
++-----+--------+-------------+
+|   3 | snacks | yummy       |
++-----+--------+-------------+
+1 row in set (0.001 sec)
+
+
+5. Display all products to which category is not assigned
+MariaDB [DBMSBasic]> select *
+    -> from Product 
+    -> where cat_id is null;
++-----+--------+-------+------+--------+---------+
+| pid | pname  | price | qty  | cat_id | sals_id |
++-----+--------+-------+------+--------+---------+
+| 167 | eraser | 90.00 |    5 |   NULL |    NULL |
++-----+--------+-------+------+--------+---------+
+1 row in set (0.001 sec)
+
+
+6. Display count of products to whom category is not assigned.
+	MariaDB [DBMSBasic]> select count(*) count
+    -> from Product
+    -> where cat_id is null;
++-------+
+| count |
++-------+
+|     1 |
++-------+
+1 row in set (0.001 sec)
+
+
+7. Write a query to list proid,pname,catid and price of all products whose price is more
+than the average price of the products in that category.
+MariaDB [DBMSBasic]> select p.pid,p.pname,p.cat_id,p.price
+    -> from Product p
+    -> where p.price>(select avg(price) from Product p1 where p.pid=p1.pid);
+Empty set (0.001 sec)
+
+
+8. List count of products sold by each salesman.
+MariaDB [DBMSBasic]> select sals_id,count(*)o
+    -> from Product
+    -> where sals_id is not null
+    -> group by sals_id;
++---------+---+
+| sals_id | o |
++---------+---+
+|      11 | 1 |
+|      12 | 2 |
+|      14 | 2 |
++---------+---+
+3 rows in set (0.001 sec)
+
+
+2) List all employees reporting to the mgr to whom Smith reports.
+sMariaDB [DBMSBasic]> select *
+    -> from EMP
+    -> where mgr=(select mgr from EMP where ename='smith');
++-------+-------+-------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB   | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+-------+------+------------+------+------+--------+
+|  7369 | SMITH | CLERK | 7902 | 1980-12-17 |  880 | NULL |     20 |
++-------+-------+-------+------+------------+------+------+--------+
+1 row in set (0.001 sec)
+
+
+3) Try out on delete set null/cascade and on update set null/cascade done in calss.
+Practice not in /in sub queries done in class demao.
+create table dept1
+(dno int,
+ dname varchar(12),
+ constraint pk_dno primary key(dno)
+);
+insert into dept1
+values(10,'R&D'),(20,'Training'),(30,'Development'),(40,'Mkt');
+
+
+create table emp1
+(eno int,
+ ename varchar(15),
+ sal int,
+ deptno int,
+ constraint pk_eno primary key(eno),
+ constraint fk_deptno2 foreign key(deptno) references dept1(dno)
+ on delete set null
+);
+
+insert into emp1
+values(1,'Sumit',20000,10),(2,'Geeta',30000,10),
+(3,'Seema',12000,20),(4,'Sumit',42000,30),(5,'Seeta',35000,10),
+(6,'Sanjay',44000,20); 
+
+MariaDB [DBMSBasic]> delete from dept1
+    -> where dno=20;
+Query OK, 1 row affected (0.032 sec)
+
+MariaDB [DBMSBasic]> select * from dept1;
++-----+-------------+
+| dno | dname       |
++-----+-------------+
+|  10 | R&D         |
+|  30 | Development |
+|  40 | Mkt         |
++-----+-------------+
+3 rows in set (0.001 sec)
+
+MariaDB [DBMSBasic]> select * from emp1;
++-----+--------+-------+--------+
+| eno | ename  | sal   | deptno |
++-----+--------+-------+--------+
+|   1 | Sumit  | 20000 |     10 |
+|   2 | Geeta  | 30000 |     10 |
+|   3 | Seema  | 12000 |   NULL |
+|   4 | Sumit  | 42000 |     30 |
+|   5 | Seeta  | 35000 |     10 |
+|   6 | Sanjay | 44000 |   NULL |
++-----+--------+-------+--------+
+6 rows in set (0.001 sec)
+
+
+create table cat
+(cat_id int auto_increment,
+ cname varchar(12),
+ constraint pk_catid primary key(cat_id)
+);
+
+insert into cat(cname)
+values('Food'),('Stationary'),('Clothes'),('electronics');
+
+create table prod
+(pid int,
+ pname varchar(20),
+ cid int,
+ constraint pk_pid1 primary key(pid),
+ constraint fk_cid1 foreign key(cid) references cat(cat_id)
+ on delete cascade
+);
+
+insert into prod
+values(100,'eraser',2),(101,'pen',2),(102,'lays',1),
+(103,'dairy milk',1),(104,'laptop',4),(105,'biscuits',1);
+
+MariaDB [DBMSBasic]> select * from cat;
++--------+-------------+
+| cat_id | cname       |
++--------+-------------+
+|      1 | Food        |
+|      2 | Stationary  |
+|      3 | Clothes     |
+|      4 | electronics |
++--------+-------------+
+4 rows in set (0.000 sec)
+
+MariaDB [DBMSBasic]> select * from prod;
++-----+------------+------+
+| pid | pname      | cid  |
++-----+------------+------+
+| 100 | eraser     |    2 |
+| 101 | pen        |    2 |
+| 102 | lays       |    1 |
+| 103 | dairy milk |    1 |
+| 104 | laptop     |    4 |
+| 105 | biscuits   |    1 |
++-----+------------+------+
+6 rows in set (0.001 sec)
+
+delete from cat
+where cat_id=2;
+
+MariaDB [DBMSBasic]> delete from cat
+    -> where cat_id=2;
+Query OK, 1 row affected (0.032 sec)
+
+MariaDB [DBMSBasic]> select * from cat;
++--------+-------------+
+| cat_id | cname       |
++--------+-------------+
+|      1 | Food        |
+|      3 | Clothes     |
+|      4 | electronics |
++--------+-------------+
+3 rows in set (0.001 sec)
+
+MariaDB [DBMSBasic]> select * from prod;
++-----+------------+------+
+| pid | pname      | cid  |
++-----+------------+------+
+| 102 | lays       |    1 |
+| 103 | dairy milk |    1 |
+| 104 | laptop     |    4 |
+| 105 | biscuits   |    1 |
++-----+------------+------+
+4 rows in set (0.001 sec)
+
+//on update set null
+
+create table prod1
+(pid int,
+ pname varchar(20),
+ cid int,
+ constraint pk_pid2 primary key(pid),
+ constraint fk_cid2 foreign key(cid) references cat(cat_id)
+ on update set null
+);
+
+insert into cat(cat_id,cname)values(2,'Stationary');
+insert into prod1
+values(100,'eraser',2),(101,'pen',2),(102,'lays',1),
+(103,'dairy milk',1),(104,'laptop',4),(105,'biscuits',1);
+
+MariaDB [DBMSBasic]> select * from prod1;
++-----+------------+------+
+| pid | pname      | cid  |
++-----+------------+------+
+| 100 | eraser     |    2 |
+| 101 | pen        |    2 |
+| 102 | lays       |    1 |
+| 103 | dairy milk |    1 |
+| 104 | laptop     |    4 |
+| 105 | biscuits   |    1 |
++-----+------------+------+
+6 rows in set (0.001 sec)
+
+MariaDB [DBMSBasic]> update cat set cat_id=11 where cat_id=1;
+Query OK, 1 row affected (0.031 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [DBMSBasic]> select * from cat;
++--------+-------------+
+| cat_id | cname       |
++--------+-------------+
+|      2 | Stationary  |
+|      3 | Clothes     |
+|      4 | electronics |
+|     11 | Food        |
++--------+-------------+
+4 rows in set (0.001 sec)
+
+MariaDB [DBMSBasic]> select * from prod1;
++-----+------------+------+
+| pid | pname      | cid  |
++-----+------------+------+
+| 100 | eraser     |    2 |
+| 101 | pen        |    2 |
+| 102 | lays       | NULL |
+| 103 | dairy milk | NULL |
+| 104 | laptop     |    4 |
+| 105 | biscuits   | NULL |
++-----+------------+------+
+6 rows in set (0.000 sec)
+
+//on update cascade
+
+create table prod2
+(pid int,
+ pname varchar(20),
+ cid int,
+ constraint pk_pid3 primary key(pid),
+ constraint fk_cid3 foreign key(cid) references cat(cat_id)
+ on update set null
+);
+
+insert into cat(cat_id,cname)values(1,'food');
+insert into prod2
+values(100,'eraser',2),(101,'pen',2),(102,'lays',1),
+(103,'dairy milk',1),(104,'laptop',4),(105,'biscuits',1);
+
+MariaDB [DBMSBasic]> update cat
+    -> set cat_id=12
+    -> where cat_id=2;
+Query OK, 1 row affected (0.027 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [DBMSBasic]> select * from cat;
++--------+-------------+
+| cat_id | cname       |
++--------+-------------+
+|      1 | food        |
+|      3 | Clothes     |
+|      4 | electronics |
+|     11 | Food        |
+|     12 | Stationary  |
++--------+-------------+
+5 rows in set (0.001 sec)
+
+MariaDB [DBMSBasic]> select * from prod2;
++-----+------------+------+
+| pid | pname      | cid  |
++-----+------------+------+
+| 100 | eraser     | NULL |
+| 101 | pen        | NULL |
+| 102 | lays       |    1 |
+| 103 | dairy milk |    1 |
+| 104 | laptop     |    4 |
+| 105 | biscuits   |    1 |
++-----+------------+------+
+6 rows in set (0.001 sec)
+
+
+
+4) Add new row in emp having deptno 80 and another row with deptno null.
+
+MariaDB [DBMSBasic]> insert into EMP values(7989,'john','clerk',7902,'1980-04-24',1500,100,80);
+Query OK, 1 row affected (0.030 sec)
+
+MariaDB [DBMSBasic]> select * from EMP;
++-------+--------+-----------+------+------------+--------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+--------+-----------+------+------------+--------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |   1790 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |   1425 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |   1515 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 |
+|  7989 | john   | clerk     | 7902 | 1980-04-24 |   1500 |  100 |     80 |
++-------+--------+-----------+------+------------+--------+------+--------+
+15 rows in set (0.001 sec)
+
+MariaDB [DBMSBasic]> insert into EMP values(7990,'keem','MANAGER',7839,'1982-06-24',300,200,null);
+Query OK, 1 row affected (0.032 sec)
+
+MariaDB [DBMSBasic]> select * from EMP;
++-------+--------+-----------+------+------------+--------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+--------+-----------+------+------------+--------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |   1790 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |   1425 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |   1515 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 |
+|  7989 | john   | clerk     | 7902 | 1980-04-24 |   1500 |  100 |     80 |
+|  7990 | keem   | MANAGER   | 7839 | 1982-06-24 |    300 |  200 |   NULL |
++-------+--------+-----------+------+------------+--------+------+--------+
+16 rows in set (0.001 sec)
+
+
+**************** Extra assignments on Date and Time Functions **********************
+
+1] Write a query to display the first day of the month (in datetime format) three months
+before the current month.
+
+Sample current date : 2014-09-03
+Expected result : 2014-06-01
+
+MariaDB [DBMSBasic]> SELECT DATE_FORMAT(LAST_DAY(CURDATE() - INTERVAL 4 MONTH) + INTERVAL 1 DAY, '%Y-%m-%d') DATE;
++------------+
+| DATE       |
++------------+
+| 2025-06-01 |
++------------+
+1 row in set (0.001 sec)
+
+
+
+2] Write a query to display the last day of the month (in datetime format) three months
+before the current month.
+
+ariaDB [DBMSBasic]> SELECT DATE_FORMAT(LAST_DAY(CURDATE() - INTERVAL 3 MONTH) , '%Y-%m-%d') DATE;
++------------+
+| DATE       |
++------------+
+| 2025-06-30 |
++------------+
+1 row in set (0.000 sec)
+
+3] Write a query to get the distinct Mondays from hiredate in emp tables.
+MariaDB [DBMSBasic]> select DAYNAME(hiredate) 
+    -> from EMP
+    -> where DAYNAME(hiredate)='monday';
++-------------------+
+| DAYNAME(hiredate) |
++-------------------+
+| Monday            |
++-------------------+
+1 row in set (0.001 sec)
+
+
+4] Write a query to get the first day of the current year.
+ MariaDB [DBMSBasic]> select date_format(curdate(),'%Y-01-01') DATE;
++------------+
+| DATE       |
++------------+
+| 2025-01-01 |
++------------+
+1 row in set (0.000 sec)
+
+
+5] Write a query to get the last day of the current year.
+ MariaDB [DBMSBasic]> select date_format(curdate(),'%Y-12-31') DATE;
++------------+
+| DATE       |
++------------+
+| 2025-12-31 |
++------------+
+1 row in set (0.000 sec)
+
+
+6] Write a query to calculate your age in year.
+ MariaDB [DBMSBasic]>select year(curdate())-2003 AS age;
++------------+
+|    age     |
++------------+
+|    22      |
++------------+
+1 row in set (0.000 sec)
+
+
+7] Write a query to get the current date in the following format.
+Sample date : 04-sep-2014
+MariaDB [DBMSBasic]> SELECT DATE_FORMAT(CURRENT_DATE, '%d-%M-%Y');
++---------------------------------------+
+| DATE_FORMAT(CURRENT_DATE, '%d-%M-%Y') |
++---------------------------------------+
+| 19-September-2025                     |
++---------------------------------------+
+1 row in set (0.000 sec)
+
+
+8] Write a query to get the current date in Thursday September 2014 format.
+Thursday September 2014
+MariaDB [DBMSBasic]> select date_format(curdate(),'%W %M %Y') as curr_date;
++-------------------------+
+| curr_date               |
++-------------------------+
+| Thrusday September 2025 |
++-------------------------+
+
+
+9] Write a query to extract the year from the current date.
+MariaDB [DBMSBasic]> select year(curdate()) yr;
++-------+
+| yr    |
++-------+
+| 2025  |
++-------+
+1 row in set (0.001 sec)
+
+
+10] Write a query to get the first name and hire date from employees table where hire date between '1987-06-01' and '1987-07-30'
+MariaDB [DBMSBasic]> select ename,hiredate
+    -> from EMP
+    -> where hiredate between '1987-06-01' and '1987-07-30';
+
+Empty set (0.001 sec)
+
+
+11] Write a query to display the current date in the following format.
+Sample output: Thursday 4th September 2014 00:00:00
+MariaDB [DBMSBasic]> select date_format(curdate(),'%W %M %Y %H:%i:%S') date;
++----------------------------------------+
+| date                                   |
++----------------------------------------+
+| Thursday 18th September 2025 00:00:00  |
++----------------------------------------+
+
+12] Write a query to display the current date in the following format.
+Sample output: 05/09/2014
+MariaDB [DBMSBasic]> select date_format(curdate(),'%d/%m/%Y') date;
++------------+
+| date       |
++------------+
+| 05/09/2014 |
++------------+
+
+13] Write a query to display the current date in the following format.
+Sample output: 12:00 AM Sep 5, 2014
+MariaDB [DBMSBasic]> SELECT DATE_FORMAT(NOW(), '%h:%i %p %b %e, %Y') AS date;
++-----------------------+
+| date                  |
++-----------------------+
+| 10:09 PM Sep 18, 2025 |
++-----------------------+
+
+14] Write a query to get the employees who joined in the month of June.
+select *
+from EMP
+where month(hiredate)=06;
+
+EMPNO	ENAME	JOB	MGR	HIREDATE	SAL	COMM	DEPTNO
+7782	CLARK	MANAGER	7839	1981-06-09	2695		10
+
+15] Write a query to get the years in which more than 4 employees joined.
+select year(hiredate) yr,count(*) total_emp
+from EMP
+group by year(hiredate)
+having count(*)>4;
+
+ yr	total_emp
+1981	10
+
+16] Write a query to get first name of employees who joined in 1983.
+
+select ename,year(hiredate)
+from EMP
+where year(hiredate)=1983;  
+
+# ename	year(hiredate)
+ADAMS	1983
+ 
+17] Write a query to get employees whose experience is more than 5 years.
+
+select empno,ename,hiredate,year(curdate())-year(hiredate) as experience
+from EMP
+where (year(curdate())-year(hiredate))>5;
+
+# empno	ename	hiredate	experience
+7369	SMITH	1980-12-17	45
+7499	ALLEN	1981-02-20	44
+7521	WARD	1981-02-22	44
+7566	JONES	1981-04-02	44
+7654	MARTIN	1981-09-28	44
+7698	BLAKE	1981-05-01	44
+7782	CLARK	1981-06-09	44
+7788	SCOTT	1982-12-09	43
+7839	KING	1981-11-17	44
+7844	TURNER	1981-09-08	44
+7876	ADAMS	1983-01-12	42
+7900	JAMES	1981-12-03	44
+7902	FORD	1981-12-03	44
+7934	MILLER	1982-01-23	43
+
+18] Write a query to get employee ID, name, and date of first salary of the employees. Consider that first salary date is one month after employee joining.
+
+select empno,ename,date_add(hiredate,interval 1 month) "first sal date"
+from EMP;
+
+# empno	ename	first sal date
+7369	SMITH	1981-01-17
+7499	ALLEN	1981-03-20
+7521	WARD	1981-03-22
+7566	JONES	1981-05-02
+7654	MARTIN	1981-10-28
+7698	BLAKE	1981-06-01
+7782	CLARK	1981-07-09
+7788	SCOTT	1983-01-09
+7839	KING	1981-12-17
+7844	TURNER	1981-10-08
+7876	ADAMS	1983-02-12
+7900	JAMES	1982-01-03
+7902	FORD	1982-01-03
+7934	MILLER	1982-02-23
+
+19] Write a query to get first name, hire date and experience of the employees.
+
+select empno,ename,hiredate,year(curdate())-year(hiredate) as experience
+from EMP;
+
+# empno	ename	hiredate	experience
+7369	SMITH	1980-12-17	45
+7499	ALLEN	1981-02-20	44
+7521	WARD	1981-02-22	44
+7566	JONES	1981-04-02	44
+7654	MARTIN	1981-09-28	44
+7698	BLAKE	1981-05-01	44
+7782	CLARK	1981-06-09	44
+7788	SCOTT	1982-12-09	43
+7839	KING	1981-11-17	44
+7844	TURNER	1981-09-08	44
+7876	ADAMS	1983-01-12	42
+7900	JAMES	1981-12-03	44
+7902	FORD	1981-12-03	44
+7934	MILLER	1982-01-23	43
+
+
+20] Write a query to get the  display year , and number of employees joined in 1981.
+
+select year(hiredate) yr,count(*) total_emp
+from EMP
+where year(hiredate)=1981
+group by year(hiredate);
+
+# yr	total_emp
+1981	10
+
+ 
+
+

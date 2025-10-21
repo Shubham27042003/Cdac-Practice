@@ -1,0 +1,943 @@
+MariaDB [DBMSBasic]> CREATE TABLE faculty
+    (fid int,
+    fname varchar (20) not null,
+    sp_skill1 varchar (30),
+    sp_skill2 varchar (30),
+    constraint pk_fidf primary key(fid)
+    );
+Query OK, 0 rows affected (0.125 sec)
+
+insert into faculty values(10,'Amol','Database','java');
+insert into faculty values(11,'Asha','java','mysql');
+insert into faculty values(12,'kiran','cpp','database');
+insert into faculty values(13,'seeta','mysql','database');
+
+
+MariaDB [DBMSBasic]> select* from faculty;
++-----+---------+-----------+-----------+
+| fid |  fname  | sp_skill1 | sp_skill2 |
++-----+---------+-----------+-----------+
+|  10 | Amol    | Database  | java      |
+|  11 | Asha    | java      | mysql     |
+|  12 | kiran   | cpp       | database  |
+|  13 | seeta   | mysql     | database  |
++-----+---------+-----------+-----------+
+4 rows in set (0.001 sec)
+
+
+
+room(roomid,rname,rloc)
+
+   MariaDB [DBMSBasic]> create table room(rid int primary key,rname varchar(15) not null,rlov varchar(20));
+Query OK, 0 rows affected (0.116 sec)
+
+   
+insert into room values(100,'Jasmin','1st floor'),(101,'Rose','2nd floor'),(105,'Lotus','1st floor'),(103,'Mogra','1st floor');
+
+
+
+. courses(cid(PK),cname,rid,fid(FK))
+   
+CREATE TABLE Courses(cid int primary key,cname varchar(15) not null,rid int,fid int,constraint fk_ridr foreign key(rid) references room(rid) on delete set null,constraint fk_fidf foreign key(fid) references faculty(fid) on delete set null);
+   
+insert into Courses values(121,'DBDA',100,10),(131,'DAC',101,null),(141,'DTISS',null,null),(151,'DOIT',105,12);
+   
+1. List all rooms which are not allocated to any courses.
+Expected Output
++---------+-------------+-------------+
+|  rid      | rname     | rloc      |    |
++---------+-------------+-------------+
+|103     | Mogra     | 1st floor |
++---------+-------------+--------------+
+
+select *
+from room r
+where rid not in (select rid
+from Courses c
+where r.rid=c.rid);
+
+MariaDB [DBMSBasic]> select *
+    -> from room r
+    -> where rid not in (select rid
+    -> from Courses c
+    -> where r.rid=c.rid);
++-----+-------+-----------+
+| rid | rname | rlov      |
++-----+-------+-----------+
+| 103 | Mogra | 1st floor |
++-----+-------+-----------+
+1 row in set (0.001 sec)
+
+
+
+2. List all faculties conducting module MySQL
+MariaDB [DBMSBasic]> select * 
+    -> from faculty f1
+    -> where fid in(select fid from faculty f2 where f1.fid=f2.fid and (sp_skill1='mysql' OR sp_skill2='mysql'));
++-----+---------+-----------+-----------+
+| fid |  fname  | sp_skill1 | sp_skill2 |
++-----+---------+-----------+-----------+
+|  11 | Asha    | java      | mysql     |
+|  13 | seeta   | mysql     | database  |
++-----+---------+-----------+-----------+
+2 rows in set (0.001 sec)
+
+
+MariaDB [DBMSBasic]> select *
+    -> from faculty f1
+    -> join faculty f2
+    -> on f1.fid=f2.fid
+    -> where f2.sp_skill1='mysql' OR f2.sp_skill2='mysql';
++-----+---------+-----------+-----------+-----+---------+-----------+-----------+
+| fid |  fname  | sp_skill1 | sp_skill2 | fid |  fname  | sp_skill1 | sp_skill2 |
++-----+---------+-----------+-----------+-----+---------+-----------+-----------+
+|  11 | Asha    | java      | mysql     |  11 | Asha    | java      | mysql     |
+|  13 | seeta   | mysql     | database  |  13 | seeta   | mysql     | database  |
++-----+---------+-----------+-----------+-----+---------+-----------+-----------+
+2 rows in set (0.001 sec)
+
+         
+3. Generate detailed report as follows for all courses
+cid,cname,rid,rname,rloc,fid,fname
+
+select c.cid,c.cname,r.rid,r.rname,r.rloc,f.fid,f.fname
+from Courses c
+join faculty f
+on f.fid=c.fid
+join room r
+on c.rid=r.rid;
+
+MariaDB [DBMSBasic]> select c.cid,c.cname,r.rid,r.rname,r.rloc,f.fid,f.fname
+    -> from Courses c
+    -> join faculty f
+    -> on f.fid=c.fid
+    -> join room r
+    -> on c.rid=r.rid;
++-----+-------+-----+--------+-----------+-----+-------+
+| cid | cname | rid | rname  | rloc      | fid | fname |
++-----+-------+-----+--------+-----------+-----+-------+
+| 121 | DBDA  | 100 | Jasmin | 1st floor |  10 | Amol  |
+| 151 | DOIT  | 105 | Lotus  | 1st floor |  12 | kiran |
++-----+-------+-----+--------+-----------+-----+-------+
+2 rows in set (0.001 sec)
+
+
+
+4. list all rooms which are allocated or not allocated to any courses.
+Expected Output
++---------+-------------+----------+------------+
+|  rid      | rname     | cid       | cname   |
++---------+-------------+----------+------------+
+| 100     | Jasmin    |  121     | DBDA     |
+| 101     | Rose        |  131     | DAC       |
+| 103     | Mogra     | NULL   | NULL     |
+| 105     | Lotus       |  151     | DIOT      |
++---------+-------------+----------+------------+
+4 rows in set (0.00 sec)
+
+
+MariaDB [DBMSBasic]> select r.rid,r.rname,c.cid,c.cname
+    -> from room r
+    -> left join Courses c
+    -> on r.rid=c.rid
+    -> order by r.rid;
++-----+--------+------+-------+
+| rid | rname  | cid  | cname |
++-----+--------+------+-------+
+| 100 | Jasmin |  121 | DBDA  |
+| 101 | Rose   |  131 | DAC   |
+| 103 | Mogra  | NULL | NULL  |
+| 105 | Lotus  |  151 | DOIT  |
++-----+--------+------+-------+
+4 rows in set (0.001 sec)
+
+
+
+5. display courses and faculty assigned to those courses whose special skill is database.
+Expected Output
++-------+-----------+-------+-----------+--------------+---------------+
+| cid    | cname  | fid    | fname  | sp_skill1   | sp_skill2    |
++-------+-----------+-------+-----------+--------------+---------------+
+| 121  | DBDA    |  10   | Amol     | database  |  JAVA         |
+| 151  | DIOT      |  12   | Kiran     | CPP           |  Database |
++-------+-----------+--------+-----------+-------------+---------------+
+2 rows in set (0.00 sec)
+
+MariaDB [DBMSBasic]> select c.cid,c.cname,f.fid,f.fname,f.sp_skill1,f.sp_skill2
+    -> from Courses c
+    -> join faculty f
+    -> on c.fid=f.fid
+    -> where f.sp_skill1='database' OR f.sp_skill2='database';
++-----+-------+-----+-------+-----------+-----------+
+| cid | cname | fid | fname | sp_skill1 | sp_skill2 |
++-----+-------+-----+-------+-----------+-----------+
+| 121 | DBDA  |  10 | Amol  | Database  | java      |
+| 151 | DOIT  |  12 | kiran | cpp       | database  |
++-----+-------+-----+-------+-----------+-----------+
+2 rows in set (0.001 sec)
+
+
+
+************ Use emp, dept *****************
+
+1 Find 4 th highest sal in emp table
+MariaDB [DBMSBasic]> select e1.sal 
+    -> from EMP e1
+    -> where 3=(select count(distinct e2.sal) from EMP e2 where e2.sal>e1.sal);
++------+
+| sal  |
++------+
+| 3135 |
++------+
+1 row in set (0.001 sec)
+
+
+2 List all employees earning sal less than the avg sal of the dept they work in.
+MariaDB [DBMSBasic]> select *
+    -> from EMP e1
+    -> where e1.sal >(select avg(sal) from EMP e2 where e1.deptno=e2.deptno);
++-------+-------+-----------+------+------------+--------+------+--------+
+| EMPNO | ENAME | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+-------+-----------+------+------------+--------+------+--------+
+|  7499 | ALLEN | SALESMAN  | 7698 | 1981-02-20 |   1790 |  300 |     30 |
+|  7566 | JONES | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7698 | BLAKE | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7788 | SCOTT | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING  | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7902 | FORD  | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
++-------+-------+-----------+------+------------+--------+------+--------+
+6 rows in set (0.001 sec)
+
+
+
+3 List ename, deptno and sal of employees earning maximum salary in their dept using
+correlated query.
+MariaDB [DBMSBasic]> select e1.ename,e1.deptno,e1.sal
+    -> from EMP e1
+    -> where e1.sal=(select max(e2.sal) from EMP e2 where e1.deptno=e2.deptno);
++-------+--------+------+
+| ename | deptno | sal  |
++-------+--------+------+
+| BLAKE |     30 | 3135 |
+| SCOTT |     20 | 3300 |
+| KING  |     10 | 5500 |
+| FORD  |     20 | 3300 |
+| john  |     80 | 1500 |
++-------+--------+------+
+5 rows in set (0.001 sec)
+
+
+
+4 List ename, deptno and sal of employees earning maximum salary in their dept using
+partition by clause
+
+select distinct ename,deptno,sal,max(sal)over(partition by deptno) as "maxsal"
+from EMP
+where sal=
+
+
+MariaDB [DBMSBasic]> select ename,deptno,sal
+    -> from EMP
+    -> where sal in (select max(sal)over(partition by deptno) from EMP);
++-------+--------+------+
+| ename | deptno | sal  |
++-------+--------+------+
+| BLAKE |     30 | 3135 |
+| SCOTT |     20 | 3300 |
+| KING  |     10 | 5500 |
+| FORD  |     20 | 3300 |
+| john  |     80 | 1500 |
+| keem  |   NULL |  300 |
++-------+--------+------+
+6 rows in set (0.001 sec)
+
+
+
+5 List all employes allocated with correct deptno. Use correlated query.
+MariaDB [DBMSBasic]> select * 
+    -> from EMP e1
+    -> where e1.deptno=(select deptno d from DEPT d where e1.deptno=d.deptno);
++-------+--------+-----------+------+------------+--------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+--------+-----------+------+------------+--------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |   1790 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |   1425 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |   1515 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 |
++-------+--------+-----------+------+------------+--------+------+--------+
+14 rows in set (0.001 sec)
+
+
+6 List the details of dept in which no emp is working. Use correlated query.
+
+MariaDB [DBMSBasic]> select *
+    -> from DEPT d
+    -> where d.deptno not in (select e.deptno from EMP e where d.deptno=e.deptno);
++--------+------------+--------+
+| DEPTNO | DNAME      | LOC    |
++--------+------------+--------+
+|     40 | OPERATIONS | BOSTON |
++--------+------------+--------+
+1 row in set (0.001 sec)
+
+7] Company decides to give rise to all employees depending on their salary grade. Information
+of which is stored in increment table. Create the table. Stored the data and solve the query.
+
+create table increment(grade int,hike int);
+
+insert following data
+insert into increment values(1,10),(2,7),(3,5),(4,2),(5,null);
+
+Consider emp,dept,salgrade and increment table .
+
+Display empno,ename,deptno,dname,sal,grade  and hike for all employees.
+
+MariaDB [DBMSBasic]> select e.empno,e.ename,d.deptno,d.dname,e.sal,s.grade,i.hike
+    -> from EMP e,DEPT d,SALGRADE s,increment i
+    -> where (e.deptno=d.deptno) and (e.sal between s.losal and s.hisal) and (s.grade=i.grade);
++-------+--------+--------+------------+--------+-------+------+
+| empno | ename  | deptno | dname      | sal    | grade | hike |
++-------+--------+--------+------------+--------+-------+------+
+|  7369 | SMITH  |     20 | RESEARCH   |    880 |     1 |   10 |
+|  7499 | ALLEN  |     30 | SALES      |   1790 |     3 |    5 |
+|  7521 | WARD   |     30 | SALES      |   1425 |     3 |    5 |
+|  7566 | JONES  |     20 | RESEARCH   | 3272.5 |     5 | NULL |
+|  7654 | MARTIN |     30 | SALES      |   1515 |     3 |    5 |
+|  7698 | BLAKE  |     30 | SALES      |   3135 |     5 | NULL |
+|  7782 | CLARK  |     10 | ACCOUNTING |   2695 |     4 |    2 |
+|  7788 | SCOTT  |     20 | RESEARCH   |   3300 |     5 | NULL |
+|  7839 | KING   |     10 | ACCOUNTING |   5500 |     5 | NULL |
+|  7844 | TURNER |     30 | SALES      |   1650 |     3 |    5 |
+|  7876 | ADAMS  |     20 | RESEARCH   |   1210 |     2 |    7 |
+|  7900 | JAMES  |     30 | SALES      |   1045 |     1 |   10 |
+|  7902 | FORD   |     20 | RESEARCH   |   3300 |     5 | NULL |
+|  7934 | MILLER |     10 | ACCOUNTING |   1430 |     3 |    5 |
++-------+--------+--------+------------+--------+-------+------+
+14 rows in set (0.001 sec)
+
+8] Consider emp and dept  table display empno,ename,deptno, dname and loc for all
+employees who are working as managers.
+
+MariaDB [DBMSBasic]> select e.empno,e.ename,e.deptno,d.dname,d.loc
+    -> from EMP e
+    -> join DEPT d
+    -> on e.deptno=d.deptno
+    -> where e.job='manager';
++-------+-------+--------+------------+----------+
+| empno | ename | deptno | dname      | loc      |
++-------+-------+--------+------------+----------+
+|  7566 | JONES |     20 | RESEARCH   | DALLAS   |
+|  7698 | BLAKE |     30 | SALES      | CHICAGO  |
+|  7782 | CLARK |     10 | ACCOUNTING | NEW YORK |
++-------+-------+--------+------------+----------+
+3 rows in set (0.001 sec)
+
+
+9] Copy table emp as emp10 and dept as dept10
+Add following constraints on the emp10 and dept10 tables
+Emp table
+Empno -pk
+Ename -nn
+Deptno -fk
+
+Dept table
+Deptno-pk
+Loc – unique nn
+Dname – unique nn
+
+create table emp10 as select * from EMP;
+create table dept10 as select * from DEPT;
+
+alter table dept10
+add constraint pk_deptnod primary key(deptno);
+
+alter table dept10
+add constraint un_locd unique(loc),
+modify loc varchar(13) NOT NULL;
+
+alter table dept10
+add constraint un_dnamed unique(dname),
+modify dname varchar(14) NOT NULL;
+
+
+alter table emp10
+add constraint pk_empnoe primary key(empno);
+
+alter table emp10
+add constraint fk_deptnod foreign key(deptno) references dept10(deptno);
+
+alter table emp10
+modify ename varchar(10) not null;
+
+MariaDB [DBMSBasic]> desc dept10;
++--------+------------------+------+-----+---------+-------+
+| Field  | Type             | Null | Key | Default | Extra |
++--------+------------------+------+-----+---------+-------+
+| DEPTNO | int(10) unsigned | NO   | PRI | NULL    |       |
+| dname  | varchar(14)      | NO   | UNI | NULL    |       |
+| loc    | varchar(13)      | NO   | UNI | NULL    |       |
++--------+------------------+------+-----+---------+-------+
+3 rows in set (0.002 sec)
+
+MariaDB [DBMSBasic]> desc emp10;
++----------+------------------+------+-----+---------+-------+
+| Field    | Type             | Null | Key | Default | Extra |
++----------+------------------+------+-----+---------+-------+
+| EMPNO    | int(10) unsigned | NO   | PRI | NULL    |       |
+| ename    | varchar(10)      | NO   |     | NULL    |       |
+| JOB      | varchar(9)       | YES  |     | NULL    |       |
+| MGR      | int(10) unsigned | YES  |     | NULL    |       |
+| HIREDATE | date             | YES  |     | NULL    |       |
+| SAL      | float            | YES  |     | NULL    |       |
+| COMM     | float            | YES  |     | NULL    |       |
+| DEPTNO   | int(10) unsigned | YES  | MUL | NULL    |       |
++----------+------------------+------+-----+---------+-------+
+8 rows in set (0.031 sec)
+
+
+Practice rollback, savepoint, commit
+1] commit
+MariaDB [DBMSBasic]> set autocommit=0;
+Query OK, 0 rows affected (0.000 sec)
+
+MariaDB [DBMSBasic]> insert into emp10 values(7936,'john','manager',7839,'1982-07-01',1500,100,10);
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [DBMSBasic]> select * from emp10 where deptno=10;
++-------+--------+-----------+------+------------+------+------+--------+
+| EMPNO | ename  | JOB       | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-----------+------+------------+------+------+--------+
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2695 | NULL |     10 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5500 | NULL |     10 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1430 | NULL |     10 |
+|  7936 | john   | manager   | 7839 | 1982-07-01 | 1500 |  100 |     10 |
++-------+--------+-----------+------+------------+------+------+--------+
+4 rows in set (0.001 sec)
+
+MariaDB [DBMSBasic]> exit
+Bye
+dac@cdac-Veriton-M200-H310:~$ sudo mysql
+[sudo] password for dac: 
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 36
+Server version: 10.6.22-MariaDB-0ubuntu0.22.04.1 Ubuntu 22.04
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> use DBMSBasic;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+MariaDB [DBMSBasic]> select * from emp10 where deptno=10;
++-------+--------+-----------+------+------------+------+------+--------+
+| EMPNO | ename  | JOB       | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-----------+------+------------+------+------+--------+
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2695 | NULL |     10 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5500 | NULL |     10 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1430 | NULL |     10 |
++-------+--------+-----------+------+------------+------+------+--------+
+3 rows in set (0.001 sec)
+
+2] commit and rollback
+MariaDB [DBMSBasic]> insert into emp10 values(7936,'john','manager',7839,'1982-07-01',1500,100,10);
+Query OK, 1 row affected (0.017 sec)
+
+MariaDB [DBMSBasic]> insert into emp10 values(7937,'mak','clerk',7782,'1981-07-01',15000,200,20);
+Query OK, 1 row affected (0.025 sec)
+
+MariaDB [DBMSBasic]> commit;
+Query OK, 0 rows affected (0.000 sec)
+
+MariaDB [DBMSBasic]> select * from emp10;
++-------+--------+-----------+------+------------+--------+------+--------+
+| EMPNO | ename  | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+--------+-----------+------+------------+--------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |   1790 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |   1425 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |   1515 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 |
+|  7936 | john   | manager   | 7839 | 1982-07-01 |   1500 |  100 |     10 |
+|  7937 | mak    | clerk     | 7782 | 1981-07-01 |  15000 |  200 |     20 |
++-------+--------+-----------+------+------------+--------+------+--------+
+16 rows in set (0.001 sec)
+
+MariaDB [DBMSBasic]> rollback;
+Query OK, 0 rows affected (0.000 sec)
+
+MariaDB [DBMSBasic]> select * from emp10;
++-------+--------+-----------+------+------------+--------+------+--------+
+| EMPNO | ename  | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+--------+-----------+------+------------+--------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |   1790 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |   1425 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |   1515 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 |
+|  7936 | john   | manager   | 7839 | 1982-07-01 |   1500 |  100 |     10 |
+|  7937 | mak    | clerk     | 7782 | 1981-07-01 |  15000 |  200 |     20 |
++-------+--------+-----------+------+------------+--------+------+--------+
+16 rows in set (0.001 sec)
+
+
+MariaDB [DBMSBasic]> exit
+Bye
+dac@cdac-Veriton-M200-H310:~$ sudo mysql
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 37
+Server version: 10.6.22-MariaDB-0ubuntu0.22.04.1 Ubuntu 22.04
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> use DBMSBasic;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+MariaDB [DBMSBasic]> select * from emp10;
++-------+--------+-----------+------+------------+--------+------+--------+
+| EMPNO | ename  | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+--------+-----------+------+------------+--------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |   1790 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |   1425 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |   1515 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 |
+|  7936 | john   | manager   | 7839 | 1982-07-01 |   1500 |  100 |     10 |
+|  7937 | mak    | clerk     | 7782 | 1981-07-01 |  15000 |  200 |     20 |
++-------+--------+-----------+------+------------+--------+------+--------+
+16 rows in set (0.001 sec)
+
+3] rollback after ddl 
+
+MariaDB [DBMSBasic]> insert into emp10 values(7938,'rock','clerk',7782,'1980-07-01',3300,200,20);
+Query OK, 1 row affected (0.018 sec)
+
+MariaDB [DBMSBasic]> create table temp1(id int primary key,name varchar(20) not null);
+Query OK, 0 rows affected (0.087 sec)
+
+MariaDB [DBMSBasic]> select * from emp10;
++-------+--------+-----------+------+------------+--------+------+--------+
+| EMPNO | ename  | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+--------+-----------+------+------------+--------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |   1790 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |   1425 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |   1515 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 |
+|  7936 | john   | manager   | 7839 | 1982-07-01 |   1500 |  100 |     10 |
+|  7937 | mak    | clerk     | 7782 | 1981-07-01 |  15000 |  200 |     20 |
+|  7938 | rock   | clerk     | 7782 | 1980-07-01 |   3300 |  200 |     20 |
++-------+--------+-----------+------+------------+--------+------+--------+
+17 rows in set (0.000 sec)
+
+MariaDB [DBMSBasic]> rollback;
+Query OK, 0 rows affected (0.000 sec)
+
+MariaDB [DBMSBasic]> select * from emp10;
++-------+--------+-----------+------+------------+--------+------+--------+
+| EMPNO | ename  | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+--------+-----------+------+------------+--------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |   1790 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |   1425 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |   1515 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 |
+|  7936 | john   | manager   | 7839 | 1982-07-01 |   1500 |  100 |     10 |
+|  7937 | mak    | clerk     | 7782 | 1981-07-01 |  15000 |  200 |     20 |
+|  7938 | rock   | clerk     | 7782 | 1980-07-01 |   3300 |  200 |     20 |
++-------+--------+-----------+------+------------+--------+------+--------+
+17 rows in set (0.001 sec)
+
+
+4] savepoint and rollback
+
+
+MariaDB [DBMSBasic]> nsert into emp10 values(7953,'sam',null,null,null,null,null,null);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'nsert into emp10 values(7953,'sam',null,null,null,null,null,null)' at line 1
+MariaDB [DBMSBasic]> savepoint A;
+Query OK, 0 rows affected (0.000 sec)
+
+MariaDB [DBMSBasic]> insert into emp10 values(7950,'mil',null,null,null,null,null,null);
+Query OK, 1 row affected (0.000 sec)
+
+MariaDB [DBMSBasic]> insert into emp10 values(7951,'adan','manager',7839,'1980-07-01',5000,200,10);
+Query OK, 1 row affected (0.009 sec)
+
+MariaDB [DBMSBasic]> savepoint B;
+Query OK, 0 rows affected (0.000 sec)
+
+MariaDB [DBMSBasic]> insert into emp10 values(7952,'rim','manager',7839,'1980-07-01',3300,200,30);
+Query OK, 1 row affected (0.000 sec)
+
+MariaDB [DBMSBasic]> select * from emp10;
++-------+--------+-----------+------+------------+--------+------+--------+
+| EMPNO | ename  | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+--------+-----------+------+------------+--------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |   1790 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |   1425 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |   1515 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 |
+|  7936 | john   | manager   | 7839 | 1982-07-01 |   1500 |  100 |     10 |
+|  7937 | mak    | clerk     | 7782 | 1981-07-01 |  15000 |  200 |     20 |
+|  7938 | rock   | clerk     | 7782 | 1980-07-01 |   3300 |  200 |     20 |
+|  7939 | pop    | NULL      | NULL | NULL       |   NULL | NULL |   NULL |
+|  7940 | tim    | manager   | 7839 | 1980-07-01 |   3300 |  200 |     30 |
+|  7941 | bim    | NULL      | NULL | NULL       |   NULL | NULL |   NULL |
+|  7943 | smith  | manager   | 7839 | 1980-07-01 |   5000 |  200 |     10 |
+|  7950 | mil    | NULL      | NULL | NULL       |   NULL | NULL |   NULL |
+|  7951 | adan   | manager   | 7839 | 1980-07-01 |   5000 |  200 |     10 |
+|  7952 | rim    | manager   | 7839 | 1980-07-01 |   3300 |  200 |     30 |
++-------+--------+-----------+------+------------+--------+------+--------+
+24 rows in set (0.000 sec)
+
+MariaDB [DBMSBasic]> rollback to a;
+Query OK, 0 rows affected (0.000 sec)
+
+MariaDB [DBMSBasic]> select * from emp10;
++-------+--------+-----------+------+------------+--------+------+--------+
+| EMPNO | ename  | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+--------+-----------+------+------------+--------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |   1790 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |   1425 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |   1515 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 |
+|  7936 | john   | manager   | 7839 | 1982-07-01 |   1500 |  100 |     10 |
+|  7937 | mak    | clerk     | 7782 | 1981-07-01 |  15000 |  200 |     20 |
+|  7938 | rock   | clerk     | 7782 | 1980-07-01 |   3300 |  200 |     20 |
+|  7939 | pop    | NULL      | NULL | NULL       |   NULL | NULL |   NULL |
+|  7940 | tim    | manager   | 7839 | 1980-07-01 |   3300 |  200 |     30 |
+|  7941 | bim    | NULL      | NULL | NULL       |   NULL | NULL |   NULL |
+|  7943 | smith  | manager   | 7839 | 1980-07-01 |   5000 |  200 |     10 |
++-------+--------+-----------+------+------------+--------+------+--------+
+21 rows in set (0.000 sec)
+
+
+MariaDB [DBMSBasic]> insert into emp10 values(7953,'sam',null,null,null,null,null,null);
+Query OK, 1 row affected (0.000 sec)
+
+MariaDB [DBMSBasic]> savepoint A;
+Query OK, 0 rows affected (0.000 sec)
+
+MariaDB [DBMSBasic]> insert into emp10 values(7950,'mil',null,null,null,null,null,null);
+Query OK, 1 row affected (0.000 sec)
+
+MariaDB [DBMSBasic]> insert into emp10 values(7951,'adan','manager',7839,'1980-07-01',5000,200,10);
+Query OK, 1 row affected (0.000 sec)
+
+MariaDB [DBMSBasic]> savepoint B;
+Query OK, 0 rows affected (0.000 sec)
+
+MariaDB [DBMSBasic]> insert into emp10 values(7952,'rim','manager',7839,'1980-07-01',3300,200,30);
+Query OK, 1 row affected (0.000 sec)
+
+MariaDB [DBMSBasic]> select * from emp10;
++-------+--------+-----------+------+------------+--------+------+--------+
+| EMPNO | ename  | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+--------+-----------+------+------------+--------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |   1790 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |   1425 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |   1515 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 |
+|  7936 | john   | manager   | 7839 | 1982-07-01 |   1500 |  100 |     10 |
+|  7937 | mak    | clerk     | 7782 | 1981-07-01 |  15000 |  200 |     20 |
+|  7938 | rock   | clerk     | 7782 | 1980-07-01 |   3300 |  200 |     20 |
+|  7939 | pop    | NULL      | NULL | NULL       |   NULL | NULL |   NULL |
+|  7940 | tim    | manager   | 7839 | 1980-07-01 |   3300 |  200 |     30 |
+|  7941 | bim    | NULL      | NULL | NULL       |   NULL | NULL |   NULL |
+|  7943 | smith  | manager   | 7839 | 1980-07-01 |   5000 |  200 |     10 |
+|  7950 | mil    | NULL      | NULL | NULL       |   NULL | NULL |   NULL |
+|  7951 | adan   | manager   | 7839 | 1980-07-01 |   5000 |  200 |     10 |
+|  7952 | rim    | manager   | 7839 | 1980-07-01 |   3300 |  200 |     30 |
+|  7953 | sam    | NULL      | NULL | NULL       |   NULL | NULL |   NULL |
++-------+--------+-----------+------+------------+--------+------+--------+
+25 rows in set (0.000 sec)
+
+MariaDB [DBMSBasic]> rollback to b;
+Query OK, 0 rows affected (0.049 sec)
+
+MariaDB [DBMSBasic]> select * from emp10;
++-------+--------+-----------+------+------------+--------+------+--------+
+| EMPNO | ename  | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+--------+-----------+------+------------+--------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |   1790 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |   1425 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |   1515 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 |
+|  7936 | john   | manager   | 7839 | 1982-07-01 |   1500 |  100 |     10 |
+|  7937 | mak    | clerk     | 7782 | 1981-07-01 |  15000 |  200 |     20 |
+|  7938 | rock   | clerk     | 7782 | 1980-07-01 |   3300 |  200 |     20 |
+|  7939 | pop    | NULL      | NULL | NULL       |   NULL | NULL |   NULL |
+|  7940 | tim    | manager   | 7839 | 1980-07-01 |   3300 |  200 |     30 |
+|  7941 | bim    | NULL      | NULL | NULL       |   NULL | NULL |   NULL |
+|  7943 | smith  | manager   | 7839 | 1980-07-01 |   5000 |  200 |     10 |
+|  7950 | mil    | NULL      | NULL | NULL       |   NULL | NULL |   NULL |
+|  7951 | adan   | manager   | 7839 | 1980-07-01 |   5000 |  200 |     10 |
+|  7953 | sam    | NULL      | NULL | NULL       |   NULL | NULL |   NULL |
++-------+--------+-----------+------+------------+--------+------+--------+
+24 rows in set (0.001 sec)
+
+
+
+****************** Practice alter caluse ********************
+
+1] MariaDB [DBMSBasic]> alter table emp10
+    -> rename to emp20;
+Query OK, 0 rows affected (0.133 sec)
+
+MariaDB [DBMSBasic]> show tables;
++---------------------+
+| Tables_in_DBMSBasic |
++---------------------+
+| BONUS               |
+| Courses             |
+| Customer            |
+| Customer1           |
+| DEPT                |
+| DUMMY               |
+| EMP                 |
+| Employee            |
+| Product             |
+| SALGRADE            |
+| Salesman            |
+| Vehicle             |
+| cat                 |
+| category            |
+| course              |
+| dept1               |
+| dept10              |
+| emp1                |
+| emp100              |
+| emp20               |
+| faculty             |
+| increment           |
+| prod2               |
+| room                |
+| salesman            |
+| t1                  |
+| t2                  |
+| temp1               |
+| trainer             |
++---------------------+
+29 rows in set (0.001 sec)
+
+2] MariaDB [DBMSBasic]> alter table emp20
+    -> rename column ename to empname;
+Query OK, 0 rows affected (0.138 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [DBMSBasic]> desc emp20;
++----------+------------------+------+-----+---------+-------+
+| Field    | Type             | Null | Key | Default | Extra |
++----------+------------------+------+-----+---------+-------+
+| EMPNO    | int(10) unsigned | NO   | PRI | NULL    |       |
+| empname  | varchar(10)      | NO   |     | NULL    |       |
+| JOB      | varchar(9)       | YES  |     | NULL    |       |
+| MGR      | int(10) unsigned | YES  |     | NULL    |       |
+| HIREDATE | date             | YES  |     | NULL    |       |
+| SAL      | float            | YES  |     | NULL    |       |
+| COMM     | float            | YES  |     | NULL    |       |
+| DEPTNO   | int(10) unsigned | YES  | MUL | NULL    |       |
++----------+------------------+------+-----+---------+-------+
+8 rows in set (0.002 sec)
+
+3] MariaDB [DBMSBasic]> alter table emp20
+    -> add email varchar(20);
+Query OK, 0 rows affected (0.155 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+
+MariaDB [DBMSBasic]> select * from emp20;
++-------+---------+-----------+------+------------+--------+------+--------+-------+
+| EMPNO | empname | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO | email |
++-------+---------+-----------+------+------------+--------+------+--------+-------+
+|  7369 | SMITH   | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 | NULL  |
+|  7499 | ALLEN   | SALESMAN  | 7698 | 1981-02-20 |   1790 |  300 |     30 | NULL  |
+|  7521 | WARD    | SALESMAN  | 7698 | 1981-02-22 |   1425 |  500 |     30 | NULL  |
+|  7566 | JONES   | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 | NULL  |
+|  7654 | MARTIN  | SALESMAN  | 7698 | 1981-09-28 |   1515 | 1400 |     30 | NULL  |
+|  7698 | BLAKE   | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 | NULL  |
+|  7782 | CLARK   | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 | NULL  |
+|  7788 | SCOTT   | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 | NULL  |
+|  7839 | KING    | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 | NULL  |
+|  7844 | TURNER  | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 | NULL  |
+|  7876 | ADAMS   | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 | NULL  |
+|  7900 | JAMES   | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 | NULL  |
+|  7902 | FORD    | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 | NULL  |
+|  7934 | MILLER  | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 | NULL  |
+|  7936 | john    | manager   | 7839 | 1982-07-01 |   1500 |  100 |     10 | NULL  |
+|  7937 | mak     | clerk     | 7782 | 1981-07-01 |  15000 |  200 |     20 | NULL  |
+|  7938 | rock    | clerk     | 7782 | 1980-07-01 |   3300 |  200 |     20 | NULL  |
+|  7939 | pop     | NULL      | NULL | NULL       |   NULL | NULL |   NULL | NULL  |
+|  7940 | tim     | manager   | 7839 | 1980-07-01 |   3300 |  200 |     30 | NULL  |
+|  7941 | bim     | NULL      | NULL | NULL       |   NULL | NULL |   NULL | NULL  |
+|  7943 | smith   | manager   | 7839 | 1980-07-01 |   5000 |  200 |     10 | NULL  |
+|  7950 | mil     | NULL      | NULL | NULL       |   NULL | NULL |   NULL | NULL  |
+|  7951 | adan    | manager   | 7839 | 1980-07-01 |   5000 |  200 |     10 | NULL  |
+|  7953 | sam     | NULL      | NULL | NULL       |   NULL | NULL |   NULL | NULL  |
++-------+---------+-----------+------+------------+--------+------+--------+-------+
+24 rows in set (0.001 sec)
+
+4] change datatype
+MariaDB [DBMSBasic]> desc emp20;
++----------+------------------+------+-----+---------+-------+
+| Field    | Type             | Null | Key | Default | Extra |
++----------+------------------+------+-----+---------+-------+
+| EMPNO    | int(10) unsigned | NO   | PRI | NULL    |       |
+| empname  | varchar(10)      | NO   |     | NULL    |       |
+| JOB      | varchar(9)       | YES  |     | NULL    |       |
+| MGR      | int(10) unsigned | YES  |     | NULL    |       |
+| HIREDATE | date             | YES  |     | NULL    |       |
+| SAL      | float            | YES  |     | NULL    |       |
+| COMM     | float            | YES  |     | NULL    |       |
+| DEPTNO   | int(10) unsigned | YES  | MUL | NULL    |       |
+| email    | varchar(20)      | YES  |     | NULL    |       |
++----------+------------------+------+-----+---------+-------+
+9 rows in set (0.001 sec)
+
+MariaDB [DBMSBasic]> 
+MariaDB [DBMSBasic]> alter table emp20
+    -> modify email varchar(50);
+Query OK, 0 rows affected (0.145 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [DBMSBasic]> 
+MariaDB [DBMSBasic]> desc emp20;
++----------+------------------+------+-----+---------+-------+
+| Field    | Type             | Null | Key | Default | Extra |
++----------+------------------+------+-----+---------+-------+
+| EMPNO    | int(10) unsigned | NO   | PRI | NULL    |       |
+| empname  | varchar(10)      | NO   |     | NULL    |       |
+| JOB      | varchar(9)       | YES  |     | NULL    |       |
+| MGR      | int(10) unsigned | YES  |     | NULL    |       |
+| HIREDATE | date             | YES  |     | NULL    |       |
+| SAL      | float            | YES  |     | NULL    |       |
+| COMM     | float            | YES  |     | NULL    |       |
+| DEPTNO   | int(10) unsigned | YES  | MUL | NULL    |       |
+| email    | varchar(50)      | YES  |     | NULL    |       |
++----------+------------------+------+-----+---------+-------+
+9 rows in set (0.002 sec)
+
+5]deleting column
+
+aMariaDB [DBMSBasic]> alter table emp20
+    -> drop column email;
+Query OK, 0 rows affected (0.150 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [DBMSBasic]> desc emp20;
++----------+------------------+------+-----+---------+-------+
+| Field    | Type             | Null | Key | Default | Extra |
++----------+------------------+------+-----+---------+-------+
+| EMPNO    | int(10) unsigned | NO   | PRI | NULL    |       |
+| empname  | varchar(10)      | NO   |     | NULL    |       |
+| JOB      | varchar(9)       | YES  |     | NULL    |       |
+| MGR      | int(10) unsigned | YES  |     | NULL    |       |
+| HIREDATE | date             | YES  |     | NULL    |       |
+| SAL      | float            | YES  |     | NULL    |       |
+| COMM     | float            | YES  |     | NULL    |       |
+| DEPTNO   | int(10) unsigned | YES  | MUL | NULL    |       |
++----------+------------------+------+-----+---------+-------+
+8 rows in set (0.002 sec)
+
+

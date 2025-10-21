@@ -1,0 +1,648 @@
+DAY 5 DBMS
+
+1] Find all employees with name ending with R .
+	SELECT * FROM EMP WHERE ename REGEXP 'r$';
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 | 1650 |    0 |     30 |
+|  7934 | MILLER | CLERK    | 7782 | 1982-01-23 | 1430 | NULL |     10 |
++-------+--------+----------+------+------------+------+------+--------+
+2 rows in set (0.001 sec)
+
+2] Find all employees with name starting with M and ending with R.
+	MariaDB [DBMSBasic]> SELECT *
+    -> FROM EMP
+    -> WHERE ename REGEXP '^M.*R$';
++-------+--------+-------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB   | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-------+------+------------+------+------+--------+
+|  7934 | MILLER | CLERK | 7782 | 1982-01-23 | 1430 | NULL |     10 |
++-------+--------+-------+------+------------+------+------+--------+
+1 row in set (0.001 sec)
+
+3] To find all employees with name starting with either M or A.
+	MariaDB [DBMSBasic]> SELECT *
+    -> FROM EMP
+    -> WHERE ename REGEXP '^M|^A';
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7499 | ALLEN  | SALESMAN | 7698 | 1981-02-20 | 1790 |  300 |     30 |
+|  7654 | MARTIN | SALESMAN | 7698 | 1981-09-28 | 1515 | 1400 |     30 |
+|  7876 | ADAMS  | CLERK    | 7788 | 1983-01-12 | 1210 | NULL |     20 |
+|  7934 | MILLER | CLERK    | 7782 | 1982-01-23 | 1430 | NULL |     10 |
++-------+--------+----------+------+------------+------+------+--------+
+4 rows in set (0.001 sec)
+
+4] List the employees name having letter 'L' as the second character.
+	MariaDB [DBMSBasic]>  SELECT * 
+    ->     FROM EMP
+    ->     WHERE ename REGEXP '^.L.*';
++-------+-------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+----------+------+------------+------+------+--------+
+|  7499 | ALLEN | SALESMAN | 7698 | 1981-02-20 | 1790 |  300 |     30 |
+|  7698 | BLAKE | MANAGER  | 7839 | 1981-05-01 | 3135 | NULL |     30 |
+|  7782 | CLARK | MANAGER  | 7839 | 1981-06-09 | 2695 | NULL |     10 |
++-------+-------+----------+------+------------+------+------+--------+
+3 rows in set (0.001 sec)
+
+
+5] Find all employees with name having L at 3 rd position.
+	MariaDB [DBMSBasic]> SELECT *
+    -> FROM EMP
+    -> WHERE ename REGEXP '..L.*';
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7499 | ALLEN  | SALESMAN | 7698 | 1981-02-20 | 1790 |  300 |     30 |
+|  7934 | MILLER | CLERK    | 7782 | 1982-01-23 | 1430 | NULL |     10 |
++-------+--------+----------+------+------------+------+------+--------+
+2 rows in set (0.001 sec)
+
+6] To list all employees with name ending by ES.
+	MariaDB [DBMSBasic]> SELECT * FROM EMP WHERE ename REGEXP '.*ES$';
++-------+-------+---------+------+------------+--------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+-------+---------+------+------------+--------+------+--------+
+|  7566 | JONES | MANAGER | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7900 | JAMES | CLERK   | 7698 | 1981-12-03 |   1045 | NULL |     30 |
++-------+-------+---------+------+------------+--------+------+--------+
+2 rows in set (0.001 sec)
+
+7] To list all employees with job starting with C and ending with K.
+	MariaDB [DBMSBasic]> SELECT *
+    -> FROM EMP
+    -> WHERE job REGEXP '^c.*K$';
++-------+--------+-------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB   | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-------+------+------------+------+------+--------+
+|  7369 | SMITH  | CLERK | 7902 | 1980-12-17 |  880 | NULL |     20 |
+|  7876 | ADAMS  | CLERK | 7788 | 1983-01-12 | 1210 | NULL |     20 |
+|  7900 | JAMES  | CLERK | 7698 | 1981-12-03 | 1045 | NULL |     30 |
+|  7934 | MILLER | CLERK | 7782 | 1982-01-23 | 1430 | NULL |     10 |
++-------+--------+-------+------+------------+------+------+--------+
+4 rows in set (0.001 sec)
+
+8] To find all employees with name starting with either M or A and last character as either R or E.
+	MariaDB [DBMSBasic]> SELECT *
+    -> FROM EMP
+    -> WHERE ename REGEXP '^M|^A.*R$|E$';
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7654 | MARTIN | SALESMAN | 7698 | 1981-09-28 | 1515 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER  | 7839 | 1981-05-01 | 3135 | NULL |     30 |
+|  7934 | MILLER | CLERK    | 7782 | 1982-01-23 | 1430 | NULL |     10 |
++-------+--------+----------+------+------------+------+------+--------+
+3 rows in set (0.001 sec)
+
+9] To find all employee with name starting with A or M and ending with E.
+	MariaDB [DBMSBasic]> SELECT *
+    -> FROM EMP
+    -> WHERE ename REGEXP '^A|^M.*E$';
++-------+-------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+----------+------+------------+------+------+--------+
+|  7499 | ALLEN | SALESMAN | 7698 | 1981-02-20 | 1790 |  300 |     30 |
+|  7876 | ADAMS | CLERK    | 7788 | 1983-01-12 | 1210 | NULL |     20 |
++-------+-------+----------+------+------------+------+------+--------+
+2 rows in set (0.001 sec)
+
+10] Find all employees with name starting with A and ending with N, or it may start with S and end with H.
+		MariaDB [DBMSBasic]> SELECT *
+    -> FROM EMP
+    -> WHERE ename REGEXP '^A.*N$|^S.*H$';
++-------+-------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+----------+------+------------+------+------+--------+
+|  7369 | SMITH | CLERK    | 7902 | 1980-12-17 |  880 | NULL |     20 |
+|  7499 | ALLEN | SALESMAN | 7698 | 1981-02-20 | 1790 |  300 |     30 |
++-------+-------+----------+------+------------+------+------+--------+
+2 rows in set (0.001 sec)
+
+
+11] Find all employees with name starting with M, having L at 3 rd position and
+ends with R.
+MariaDB [DBMSBasic]> SELECT *
+    -> FROM EMP
+    -> WHERE ename REGEXP '^M.L.*R$';
++-------+--------+-------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB   | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-------+------+------------+------+------+--------+
+|  7934 | MILLER | CLERK | 7782 | 1982-01-23 | 1430 | NULL |     10 |
++-------+--------+-------+------+------------+------+------+--------+
+1 row in set (0.001 sec)
+
+
+
+12] Find all employees with name having L at 3 rd position and E at second last
+position.
+MariaDB [DBMSBasic]> SELECT *
+    -> FROM EMP
+    -> WHERE ename REGEXP '..L.*E.';
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7499 | ALLEN  | SALESMAN | 7698 | 1981-02-20 | 1790 |  300 |     30 |
+|  7934 | MILLER | CLERK    | 7782 | 1982-01-23 | 1430 | NULL |     10 |
++-------+--------+----------+------+------------+------+------+--------+
+2 rows in set (0.001 sec)
+
+13] Find all employees with name not starting with A or M
+MariaDB [DBMSBasic]> SELECT *
+    -> FROM EMP
+    -> WHERE ename REGEXP'^[^A|^M]';
++-------+--------+-----------+------+------------+--------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+--------+-----------+------+------------+--------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |   1425 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
++-------+--------+-----------+------+------------+--------+------+--------+
+10 rows in set (0.001 sec)
+
+
+14] Display all employees with sal >1000 and sal<3000 and job has A at starting
+position and ends with T.
+
+MariaDB [DBMSBasic]> SELECT *
+    -> FROM EMP
+    -> WHERE (sal>1000 AND sal<3000) AND (job REGEXP '^A.*T$');
+Empty set (0.001 sec)
+
+MariaDB [DBMSBasic]> SELECT * FROM EMP;
++-------+--------+-----------+------+------------+--------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+--------+-----------+------+------------+--------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |   1790 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |   1425 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |   1515 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 |
++-------+--------+-----------+------+------------+--------+------+--------+
+14 rows in set (0.001 sec)
+
+15] Write a query to display empno, ename, sal , increased sal by 10% and
+commission for all employees whose name starts with A,M or S.
+
+MariaDB [DBMSBasic]> SELECT empno,ename,sal,sal+((ifnull(comm,0)+sal)*0.10) "Increased sal",comm
+    -> FROM EMP
+    -> WHERE ename REGEXP '^[AMS]';
++-------+--------+------+---------------+------+
+| empno | ename  | sal  | Increased sal | comm |
++-------+--------+------+---------------+------+
+|  7369 | SMITH  |  880 |           968 | NULL |
+|  7499 | ALLEN  | 1790 |          1999 |  300 |
+|  7654 | MARTIN | 1515 |        1806.5 | 1400 |
+|  7788 | SCOTT  | 3300 |          3630 | NULL |
+|  7876 | ADAMS  | 1210 |          1331 | NULL |
+|  7934 | MILLER | 1430 |          1573 | NULL |
++-------+--------+------+---------------+------+
+6 rows in set (0.001 sec)
+
+
+16] Display all employees whose name starts with A and ends with either N or S,
+or works in dept 10.
+
+MariaDB [DBMSBasic]> SELECT *
+    -> FROM EMP
+    -> WHERE (deptno=10) OR (ename REGEXP'^A.*N$|^A.*S$');
++-------+--------+-----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-----------+------+------------+------+------+--------+
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 | 1790 |  300 |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2695 | NULL |     10 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5500 | NULL |     10 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 | 1210 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1430 | NULL |     10 |
++-------+--------+-----------+------+------------+------+------+--------+
+5 rows in set (0.001 sec)
+
+17] List all departments whose name has atleast 8 characters.
+MariaDB [DBMSBasic]> SELECT deptno,dname,LENGTH(dname) 'length'
+    -> FROM DEPT
+    -> WHERE LENGTH(dname)>=8;
++--------+------------+--------+
+| deptno | dname      | length |
++--------+------------+--------+
+|     10 | ACCOUNTING |     10 |
+|     20 | RESEARCH   |      8 |
+|     40 | OPERATIONS |     10 |
++--------+------------+--------+
+3 rows in set (0.001 sec)
+
+
+18] List the employees name having 'E' as a second last character.
+MariaDB [DBMSBasic]> SELECT *
+    -> FROM EMP
+    -> WHERE ename REGEXP '.*E.';
++-------+--------+----------+------+------------+--------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+--------+----------+------+------------+--------+------+--------+
+|  7499 | ALLEN  | SALESMAN | 7698 | 1981-02-20 |   1790 |  300 |     30 |
+|  7566 | JONES  | MANAGER  | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7900 | JAMES  | CLERK    | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7934 | MILLER | CLERK    | 7782 | 1982-01-23 |   1430 | NULL |     10 |
++-------+--------+----------+------+------------+--------+------+--------+
+5 rows in set (0.001 sec)
+
+
+19] List the details of the employee , whose names start with ‘A’ and end with
+‘S’ or whose names contains N as the second or third character,and end with
+either ‘N’ or ‘S’.
+
+MariaDB [DBMSBasic]> SELECT *
+    -> FROM EMP
+    -> WHERE ename REGEXP '^A.*S$|.N.*S$|.N.*N$|..N.*S$|..N.*N$';
++-------+-------+---------+------+------------+--------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+-------+---------+------+------------+--------+------+--------+
+|  7566 | JONES | MANAGER | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7876 | ADAMS | CLERK   | 7788 | 1983-01-12 |   1210 | NULL |     20 |
++-------+-------+---------+------+------------+--------+------+--------+
+2 rows in set (0.001 sec)
+
+
+20] List employees whose name starts with either 'A' or 'S' in dept 20.
+MariaDB [DBMSBasic]> SELECT *
+    -> FROM EMP
+    -> WHERE (deptno=20) AND ename REGEXP '^[AS]';
++-------+-------+---------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+---------+------+------------+------+------+--------+
+|  7369 | SMITH | CLERK   | 7902 | 1980-12-17 |  880 | NULL |     20 |
+|  7788 | SCOTT | ANALYST | 7566 | 1982-12-09 | 3300 | NULL |     20 |
+|  7876 | ADAMS | CLERK   | 7788 | 1983-01-12 | 1210 | NULL |     20 |
++-------+-------+---------+------+------------+------+------+--------+
+3 rows in set (0.001 sec)
+
+21] To list all employees with job starting with C , E at 3rd position and ending
+with K.
+
+MariaDB [DBMSBasic]> SELECT *
+    -> FROM EMP
+    -> WHERE job REGEXP '^C.E.*K$';
++-------+--------+-------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB   | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-------+------+------------+------+------+--------+
+|  7369 | SMITH  | CLERK | 7902 | 1980-12-17 |  880 | NULL |     20 |
+|  7876 | ADAMS  | CLERK | 7788 | 1983-01-12 | 1210 | NULL |     20 |
+|  7900 | JAMES  | CLERK | 7698 | 1981-12-03 | 1045 | NULL |     30 |
+|  7934 | MILLER | CLERK | 7782 | 1982-01-23 | 1430 | NULL |     10 |
++-------+--------+-------+------+------------+------+------+--------+
+4 rows in set (0.001 sec)
+
+
+22] To list all employees with job containing L at third position and M at third
+last position.
+
+MariaDB [DBMSBasic]> SELECT *
+    -> FROM EMP
+    -> WHERE job REGEXP '..L.*M..';
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7499 | ALLEN  | SALESMAN | 7698 | 1981-02-20 | 1790 |  300 |     30 |
+|  7521 | WARD   | SALESMAN | 7698 | 1981-02-22 | 1425 |  500 |     30 |
+|  7654 | MARTIN | SALESMAN | 7698 | 1981-09-28 | 1515 | 1400 |     30 |
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 | 1650 |    0 |     30 |
++-------+--------+----------+------+------------+------+------+--------+
+4 rows in set (0.001 sec)
+
+23] To list all employees with comm is null and name starts with ‘S’
+
+MariaDB [DBMSBasic]> SELECT *
+    -> FROM EMP
+    -> WHERE (comm IS NULL) AND ename REGEXP '^S';
++-------+-------+---------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+---------+------+------------+------+------+--------+
+|  7369 | SMITH | CLERK   | 7902 | 1980-12-17 |  880 | NULL |     20 |
+|  7788 | SCOTT | ANALYST | 7566 | 1982-12-09 | 3300 | NULL |     20 |
++-------+-------+---------+------+------------+------+------+--------+
+2 rows in set (0.001 sec)
+
+
+24] List employees in all dept whose salary not in the range of 2000 to 3000 with
+the job which is having a string called 'MAN' at the end.
+
+MariaDB [DBMSBasic]> SELECT *
+    -> FROM EMP
+    -> WHERE (NOT(sal BETWEEN 2000 AND 3000)) AND (job REGEXP '.*MAN$');
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7499 | ALLEN  | SALESMAN | 7698 | 1981-02-20 | 1790 |  300 |     30 |
+|  7521 | WARD   | SALESMAN | 7698 | 1981-02-22 | 1425 |  500 |     30 |
+|  7654 | MARTIN | SALESMAN | 7698 | 1981-09-28 | 1515 | 1400 |     30 |
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 | 1650 |    0 |     30 |
++-------+--------+----------+------+------------+------+------+--------+
+4 rows in set (0.001 sec)
+
+
+25] List all the employee whose name does not end with 'S' in dept 20 and 30?
+MariaDB [DBMSBasic]> SELECT * 
+    -> FROM EMP
+    -> WHERE (deptno IN (20,30)) AND (NOT ename REGEXP 'S$');
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7369 | SMITH  | CLERK    | 7902 | 1980-12-17 |  880 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN | 7698 | 1981-02-20 | 1790 |  300 |     30 |
+|  7521 | WARD   | SALESMAN | 7698 | 1981-02-22 | 1425 |  500 |     30 |
+|  7654 | MARTIN | SALESMAN | 7698 | 1981-09-28 | 1515 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER  | 7839 | 1981-05-01 | 3135 | NULL |     30 |
+|  7788 | SCOTT  | ANALYST  | 7566 | 1982-12-09 | 3300 | NULL |     20 |
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 | 1650 |    0 |     30 |
+|  7902 | FORD   | ANALYST  | 7566 | 1981-12-03 | 3300 | NULL |     20 |
++-------+--------+----------+------+------------+------+------+--------+
+8 rows in set (0.001 sec)
+
+
+26] Display dept names which are having letter 'O'.
+MariaDB [DBMSBasic]> SELECT *
+    -> FROM DEPT
+    -> WHERE dname REGEXP '^O|.*O.*|O$';
++--------+------------+----------+
+| DEPTNO | DNAME      | LOC      |
++--------+------------+----------+
+|     10 | ACCOUNTING | NEW YORK |
+|     40 | OPERATIONS | BOSTON   |
++--------+------------+----------+
+2 rows in set (0.001 sec)
+
+
+27] Display list all employees whose name ends with ER.
+SELECT * 
+MariaDB [DBMSBasic]> SELECT * 
+    -> FROM EMP
+    -> WHERE ename REGEXP '.*ER$';
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 | 1650 |    0 |     30 |
+|  7934 | MILLER | CLERK    | 7782 | 1982-01-23 | 1430 | NULL |     10 |
++-------+--------+----------+------+------------+------+------+--------+
+2 rows in set (0.001 sec)
+
+28] Display all employees where comm is null and name starts with ‘S’.
+MariaDB [DBMSBasic]> SELECT *
+    -> FROM EMP
+    -> WHERE (comm IS NULL) AND (ename REGEXP '^S');
++-------+-------+---------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+---------+------+------------+------+------+--------+
+|  7369 | SMITH | CLERK   | 7902 | 1980-12-17 |  880 | NULL |     20 |
+|  7788 | SCOTT | ANALYST | 7566 | 1982-12-09 | 3300 | NULL |     20 |
++-------+-------+---------+------+------------+------+------+--------+
+2 rows in set (0.001 sec)
+
+
+************* Group by and mixed queries ************
+
+1]List sum of salary for each department.
+MariaDB [DBMSBasic]> SELECT deptno,SUM(sal) "Total Sal"
+    -> FROM EMP
+    -> GROUP BY deptno;
++--------+-----------+
+| deptno | Total Sal |
++--------+-----------+
+|     10 |      9625 |
+|     20 |   11962.5 |
+|     30 |     10560 |
++--------+-----------+
+3 rows in set (0.001 sec)
+
+
+
+2] List department wise sum sal only if the sum for any department is > 10000.
+MariaDB [DBMSBasic]> SELECT deptno,SUM(sal) "Total Sal"
+    -> FROM EMP
+    -> GROUP BY deptno
+    -> HAVING SUM(sal)>10000;
++--------+-----------+
+| deptno | Total Sal |
++--------+-----------+
+|     20 |   11962.5 |
+|     30 |     10560 |
++--------+-----------+
+2 rows in set (0.001 sec)
+
+
+3] Display job wise sum of salary if the sum salary is >6000. Exclude dept 30 .
+
+MariaDB [DBMSBasic]> SELECT job,SUM(sal) "Total Sal"
+    -> FROM EMP
+    -> WHERE deptno!=30
+    -> GROUP BY job
+    -> HAVING SUM(sal)>6000; 
++---------+-----------+
+| job     | Total Sal |
++---------+-----------+
+| ANALYST |      6600 |
++---------+-----------+
+1 row in set (0.001 sec)
+
+4] Display job wise max sal only for managers, clerks, salesman working in dept 10 and
+20. Sort the data by des order of the max salary.
+
+MariaDB [DBMSBasic]> SELECT job,MAX(sal) "Max Sal"
+    -> FROM EMP
+    -> WHERE (job IN ('manager','clerk', 'salesman')) AND (deptno IN (10,20))
+    -> GROUP BY job
+    -> ORDER BY MAX(sal) DESC;
++---------+---------+
+| job     | Max Sal |
++---------+---------+
+| MANAGER |  3272.5 |
+| CLERK   |    1430 |
++---------+---------+
+2 rows in set (0.001 sec)
+
+
+5] Display job wise number of employees in all the department with total salary > 3000
+MariaDB [DBMSBasic]> SELECT job,COUNT(*) count,SUM(sal) 'Total Sal'
+    -> FROM EMP
+    -> GROUP BY job
+    -> HAVING SUM(sal)>3000;
++-----------+-------+-----------+
+| job       | count | Total Sal |
++-----------+-------+-----------+
+| ANALYST   |     2 |      6600 |
+| CLERK     |     4 |      4565 |
+| MANAGER   |     3 |    9102.5 |
+| PRESIDENT |     1 |      5500 |
+| SALESMAN  |     4 |      6380 |
++-----------+-------+-----------+
+5 rows in set (0.001 sec)
+
+
+6] Display the department number having atleast 4 employees in it.
+MariaDB [DBMSBasic]> SELECT deptno,COUNT(*) count
+    -> FROM EMP
+    -> GROUP BY deptno
+    -> HAVING COUNT(*)>=4;
++--------+-------+
+| deptno | count |
++--------+-------+
+|     20 |     5 |
+|     30 |     6 |
++--------+-------+
+2 rows in set (0.001 sec)
+
+
+7] Implement following using case statement. Use data from emp database.
+If comm is null ‘need improvement’ If <500 “ok” If >=500 and < 1000 ‘good'
+‘Excellent'.
+
+MariaDB [DBMSBasic]> SELECT empno,ename,job,mgr,hiredate,sal,comm,deptno,
+    -> CASE WHEN comm IS NULL THEN "need improvement"
+    -> WHEN comm<500 THEN "OK"
+    -> WHEN comm>=500 AND comm<1000 THEN "good"
+    -> else "EXCELLENT!!"
+    -> END AS "remark"
+    -> FROM EMP;
++-------+--------+-----------+------+------------+--------+------+--------+------------------+
+| empno | ename  | job       | mgr  | hiredate   | sal    | comm | deptno | remark           |
++-------+--------+-----------+------+------------+--------+------+--------+------------------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 | need improvement |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |   1790 |  300 |     30 | OK               |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |   1425 |  500 |     30 | good             |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 | need improvement |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |   1515 | 1400 |     30 | EXCELLENT!!      |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 | need improvement |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 | need improvement |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 | need improvement |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 | need improvement |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 | OK               |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 | need improvement |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 | need improvement |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 | need improvement |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 | need improvement |
++-------+--------+-----------+------+------------+--------+------+--------+------------------+
+14 rows in set (0.001 sec)
+
+
+8] Display salary sum and min(sal) for all employees who are managers.
+
+MariaDB [DBMSBasic]> SELECT job,SUM(sal) sum,MIN(sal) min
+    -> FROM EMP
+    -> WHERE job='manager'
+    -> GROUP BY job;
++---------+--------+------+
+| job     | sum    | min  |
++---------+--------+------+
+| MANAGER | 9102.5 | 2695 |
++---------+--------+------+
+1 row in set (0.001 sec)
+
+	OR
+	
+MariaDB [DBMSBasic]> SELECT job,SUM(sal) sum,MIN(sal) min
+    -> FROM EMP
+    -> WHERE job='manager';
++---------+--------+------+
+| job     | sum    | min  |
++---------+--------+------+
+| MANAGER | 9102.5 | 2695 |
++---------+--------+------+
+1 row in set (0.001 sec)
+
+		OR
+MariaDB [DBMSBasic]> SELECT job,SUM(sal) sum,MIN(sal) min
+    -> FROM EMP
+    -> GROUP BY job
+    -> HAVING job='manager';
++---------+--------+------+
+| job     | sum    | min  |
++---------+--------+------+
+| MANAGER | 9102.5 | 2695 |
++---------+--------+------+
+1 row in set (0.001 sec)
+
+
+9] Find sum(sal) for each dept having more than 2 clerk.
+
+MariaDB [DBMSBasic]> SELECT deptno,job,SUM(sal) sum
+    -> FROM EMP
+    -> WHERE job='clerk'
+    -> GROUP BY deptno
+    -> HAVING COUNT(job)>=2;
++--------+-------+------+
+| deptno | job   | sum  |
++--------+-------+------+
+|     20 | CLERK | 2090 |
++--------+-------+------+
+1 row in set (0.001 sec)
+
+
+10] Calculate how many employees earn sal more than 1500 in each dept.
+
+MariaDB [DBMSBasic]> SELECT deptno,COUNT(*) count
+    -> FROM EMP
+    -> WHERE sal>1500
+    -> GROUP BY deptno;
++--------+-------+
+| deptno | count |
++--------+-------+
+|     10 |     2 |
+|     20 |     3 |
+|     30 |     4 |
++--------+-------+
+3 rows in set (0.001 sec)
+
+
+11] List mgr and number of employees reporting to each mgr(manager)
+   Please consider mgr as manager no and not the job manager.
+
+MariaDB [DBMSBasic]> SELECT mgr,COUNT(*) "no of employees"
+    -> FROM EMP
+    -> GROUP BY mgr;
++------+-----------------+
+| mgr  | no of employees |
++------+-----------------+
+| NULL |               1 |
+| 7566 |               2 |
+| 7698 |               5 |
+| 7782 |               1 |
+| 7788 |               1 |
+| 7839 |               3 |
+| 7902 |               1 |
++------+-----------------+
+7 rows in set (0.001 sec)
+
+
+12] Display dept with maximun employees. Display deptno and the employee count.
+
+MariaDB [DBMSBasic]> SELECT deptno,COUNT(*) "EMPLOYEE COUNT"
+    -> FROM EMP
+    -> GROUP BY deptno
+    -> ORDER BY deptno DESC
+    -> LIMIT 1;
++--------+----------------+
+| deptno | EMPLOYEE COUNT |
++--------+----------------+
+|     30 |              6 |
++--------+----------------+
+1 row in set (0.001 sec)
+
+

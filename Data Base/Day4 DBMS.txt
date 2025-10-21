@@ -1,0 +1,802 @@
+1] Display hiredate from emp table in different formats
+
+	MariaDB [DBMSBasic]> select ename,date_format(hiredate,"%d-%m-%y") from EMP;
++--------+----------------------------------+
+| ename  | date_format(hiredate,"%d-%m-%y") |
++--------+----------------------------------+
+| SMITH  | 17-12-80                         |
+| ALLEN  | 20-02-81                         |
+| WARD   | 22-02-81                         |
+| JONES  | 02-04-81                         |
+| MARTIN | 28-09-81                         |
+| BLAKE  | 01-05-81                         |
+| CLARK  | 09-06-81                         |
+| SCOTT  | 09-12-82                         |
+| KING   | 17-11-81                         |
+| TURNER | 08-09-81                         |
+| ADAMS  | 12-01-83                         |
+| JAMES  | 03-12-81                         |
+| FORD   | 03-12-81                         |
+| MILLER | 23-01-82                         |
++--------+----------------------------------+
+14 rows in set (0.001 sec)
+
+
+	MariaDB [DBMSBasic]> select ename,date_format(hiredate,"%Y") from EMP;
++--------+----------------------------+
+| ename  | date_format(hiredate,"%Y") |
++--------+----------------------------+
+| SMITH  | 1980                       |
+| ALLEN  | 1981                       |
+| WARD   | 1981                       |
+| JONES  | 1981                       |
+| MARTIN | 1981                       |
+| BLAKE  | 1981                       |
+| CLARK  | 1981                       |
+| SCOTT  | 1982                       |
+| KING   | 1981                       |
+| TURNER | 1981                       |
+| ADAMS  | 1983                       |
+| JAMES  | 1981                       |
+| FORD   | 1981                       |
+| MILLER | 1982                       |
++--------+----------------------------+
+14 rows in set (0.001 sec)
+
+
+
+2] Find all employees whose sal is divisible by 3 .
+	MariaDB [DBMSBasic]> select *
+    ->     from EMP
+    ->     where mod(sal,3)=0;
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7698 | BLAKE  | MANAGER  | 7839 | 1981-05-01 | 2850 | NULL |     30 |
+|  7788 | SCOTT  | ANALYST  | 7566 | 1982-12-09 | 3000 | NULL |     20 |
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 | 1500 |    0 |     30 |
+|  7902 | FORD   | ANALYST  | 7566 | 1981-12-03 | 3000 | NULL |     20 |
++-------+--------+----------+------+------------+------+------+--------+
+4 rows in set (0.001 sec)
+
+
+
+3]Write query to display name followed by 4 stars followed by sal . e.g SMITH****800
+	MariaDB [DBMSBasic]> select concat(ename,'****',sal)
+    -> from EMP;
++--------------------------+
+| concat(ename,'****',sal) |
++--------------------------+
+| SMITH****800             |
+| ALLEN****1600            |
+| WARD****1250             |
+| JONES****2975            |
+| MARTIN****1250           |
+| BLAKE****2850            |
+| CLARK****2450            |
+| SCOTT****3000            |
+| KING****5000             |
+| TURNER****1500           |
+| ADAMS****1100            |
+| JAMES****950             |
+| FORD****3000             |
+| MILLER****1300           |
++--------------------------+
+14 rows in set (0.001 sec)
+
+
+4] Display email as ename followed by mycompany.com.
+e.g SMITH@mycompany.com
+	MariaDB [DBMSBasic]> select concat(ename,'@mycompany.com') email
+    -> from EMP;
++----------------------+
+| email                |
++----------------------+
+| SMITH@mycompany.com  |
+| ALLEN@mycompany.com  |
+| WARD@mycompany.com   |
+| JONES@mycompany.com  |
+| MARTIN@mycompany.com |
+| BLAKE@mycompany.com  |
+| CLARK@mycompany.com  |
+| SCOTT@mycompany.com  |
+| KING@mycompany.com   |
+| TURNER@mycompany.com |
+| ADAMS@mycompany.com  |
+| JAMES@mycompany.com  |
+| FORD@mycompany.com   |
+| MILLER@mycompany.com |
++----------------------+
+14 rows in set (0.001 sec)
+
+
+
+5] Display ename and it's length for all employees.
+e.g SMITH 5
+	MariaDB [DBMSBasic]> select ename,length(ename) length
+    -> from EMP;
++--------+--------+
+| ename  | length |
++--------+--------+
+| SMITH  |      5 |
+| ALLEN  |      5 |
+| WARD   |      4 |
+| JONES  |      5 |
+| MARTIN |      6 |
+| BLAKE  |      5 |
+| CLARK  |      5 |
+| SCOTT  |      5 |
+| KING   |      4 |
+| TURNER |      6 |
+| ADAMS  |      5 |
+| JAMES  |      5 |
+| FORD   |      4 |
+| MILLER |      6 |
++--------+--------+
+14 rows in set (0.001 sec)
+
+
+
+6] Display email as 1st 3 chacarters of ename, followed by dot, followed by 2nd and 3rd
+character of jobs ,followed by @MyCompany
+
+sMariaDB [DBMSBasic]> select ename,job,concat(substring(ename,1,3),'.',substring(job,2,2),'@mycompany.com') email
+    -> from EMP;
++--------+-----------+----------------------+
+| ename  | job       | email                |
++--------+-----------+----------------------+
+| SMITH  | CLERK     | SMI.LE@mycompany.com |
+| ALLEN  | SALESMAN  | ALL.AL@mycompany.com |
+| WARD   | SALESMAN  | WAR.AL@mycompany.com |
+| JONES  | MANAGER   | JON.AN@mycompany.com |
+| MARTIN | SALESMAN  | MAR.AL@mycompany.com |
+| BLAKE  | MANAGER   | BLA.AN@mycompany.com |
+| CLARK  | MANAGER   | CLA.AN@mycompany.com |
+| SCOTT  | ANALYST   | SCO.NA@mycompany.com |
+| KING   | PRESIDENT | KIN.RE@mycompany.com |
+| TURNER | SALESMAN  | TUR.AL@mycompany.com |
+| ADAMS  | CLERK     | ADA.LE@mycompany.com |
+| JAMES  | CLERK     | JAM.LE@mycompany.com |
+| FORD   | ANALYST   | FOR.NA@mycompany.com |
+| MILLER | CLERK     | MIL.LE@mycompany.com |
++--------+-----------+----------------------+
+14 rows in set (0.001 sec)
+
+
+7]Display name starting with upper case letter and job starting with upper case letter for
+all employees.
+e.g Smith Clerk
+
+select concat(upper(substring(ename,1,1)),lower(substring(ename,2,length(ename)))) name,concat(upper(substring(job,1,1)),lower(substring(job,2,length(job)))) job
+from EMP;
+
+MariaDB [DBMSBasic]> select concat(upper(substring(ename,1,1)),lower(substring(ename,2,length(ename)))) name,concat(upper(substring(job,1,1)),lower(substring(job,2,length(job)))) job
+    -> from EMP;
++--------+-----------+
+| name   | job       |
++--------+-----------+
+| Smith  | Clerk     |
+| Allen  | Salesman  |
+| Ward   | Salesman  |
+| Jones  | Manager   |
+| Martin | Salesman  |
+| Blake  | Manager   |
+| Clark  | Manager   |
+| Scott  | Analyst   |
+| King   | President |
+| Turner | Salesman  |
+| Adams  | Clerk     |
+| James  | Clerk     |
+| Ford   | Analyst   |
+| Miller | Clerk     |
++--------+-----------+
+14 rows in set (0.001 sec)
+
+
+8] Display first 3 characters of ename in lower case and rest everything in upper case.
+e.g smiTH
+
+MariaDB [DBMSBasic]> select concat(lower(substring(ename,1,3)),upper(substring(ename,4,length(ename)))) name
+    -> from EMP;
++--------+
+| name   |
++--------+
+| smiTH  |
+| allEN  |
+| warD   |
+| jonES  |
+| marTIN |
+| blaKE  |
+| claRK  |
+| scoTT  |
+| kinG   |
+| turNER |
+| adaMS  |
+| jamES  |
+| forD   |
+| milLER |
++--------+
+14 rows in set (0.001 sec)
+
+9] Display last 3 letters of name.
+MariaDB [DBMSBasic]> select substring(ename,-3,3) name
+    -> from EMP;
++------+
+| name |
++------+
+| ITH  |
+| LEN  |
+| ARD  |
+| NES  |
+| TIN  |
+| AKE  |
+| ARK  |
+| OTT  |
+| ING  |
+| NER  |
+| AMS  |
+| MES  |
+| ORD  |
+| LER  |
++------+
+14 rows in set (0.001 sec)
+
+
+10] Generate an email-id for all employees and display. Email id is generated as follows
+first 3 letters of name in lower case + last 2 letters of job in lower case + @knowit.com
+eg name=SMITH job=CLERK
+email-id = smirk@knowit.com
+
+MariaDB [DBMSBasic]> select ename,job,concat(lower(substring(ename,1,3)),lower(substring(job,-2,2)),'@knowit.com') "email-id"
+    -> from EMP;
++--------+-----------+------------------+
+| ename  | job       | email-id         |
++--------+-----------+------------------+
+| SMITH  | CLERK     | smirk@knowit.com |
+| ALLEN  | SALESMAN  | allan@knowit.com |
+| WARD   | SALESMAN  | waran@knowit.com |
+| JONES  | MANAGER   | joner@knowit.com |
+| MARTIN | SALESMAN  | maran@knowit.com |
+| BLAKE  | MANAGER   | blaer@knowit.com |
+| CLARK  | MANAGER   | claer@knowit.com |
+| SCOTT  | ANALYST   | scost@knowit.com |
+| KING   | PRESIDENT | kinnt@knowit.com |
+| TURNER | SALESMAN  | turan@knowit.com |
+| ADAMS  | CLERK     | adark@knowit.com |
+| JAMES  | CLERK     | jamrk@knowit.com |
+| FORD   | ANALYST   | forst@knowit.com |
+| MILLER | CLERK     | milrk@knowit.com |
++--------+-----------+------------------+
+14 rows in set (0.001 sec)
+
+
+
+11] List all employees having experience greater than 43 years.
+MariaDB [DBMSBasic]> select empno,ename,job,mgr,hiredate,sal,comm,deptno,floor(datediff(curdate(),hiredate)/365) experience
+    -> from EMP
+    -> where floor(datediff(curdate(),hiredate)/365)>=43;
++-------+--------+-----------+------+------------+------+------+--------+------------+
+| empno | ename  | job       | mgr  | hiredate   | sal  | comm | deptno | experience |
++-------+--------+-----------+------+------------+------+------+--------+------------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  800 | NULL |     20 |         44 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 | 1600 |  300 |     30 |         44 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 | 1250 |  500 |     30 |         44 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 2975 | NULL |     20 |         44 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 | 1250 | 1400 |     30 |         43 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 | 2850 | NULL |     30 |         44 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2450 | NULL |     10 |         44 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000 | NULL |     10 |         43 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 | 1500 |    0 |     30 |         44 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950 | NULL |     30 |         43 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 | 3000 | NULL |     20 |         43 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300 | NULL |     10 |         43 |
++-------+--------+-----------+------+------------+------+------+--------+------------+
+12 rows in set (0.001 sec)
+
+
+
+
+12] Increase the salary by 10% in the database for all employees having experience more
+than 40 years
+
+MariaDB [DBMSBasic]> update EMP
+    -> set sal=sal+((ifnull(comm,0)+sal)*(0.10))
+    -> where floor(datediff(curdate(),hiredate)/365)>=40;
+Query OK, 14 rows affected (0.038 sec)
+Rows matched: 14  Changed: 14  Warnings: 0
+
+MariaDB [DBMSBasic]> select * from EMP;
++-------+--------+-----------+------+------------+--------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+--------+-----------+------+------------+--------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |    880 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |   1790 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |   1425 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |   1515 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 |
++-------+--------+-----------+------+------------+--------+------+--------+
+14 rows in set (0.001 sec)
+
+
+13] From the emp table, write a SQL query to find those employees whose salary is in the
+range of 1000, and 3000 (Begin and end values included.). Return all the fields.
+
+MariaDB [DBMSBasic]> select * 
+    -> from EMP
+    -> where sal between 1000 and 3000;
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7499 | ALLEN  | SALESMAN | 7698 | 1981-02-20 | 1790 |  300 |     30 |
+|  7521 | WARD   | SALESMAN | 7698 | 1981-02-22 | 1425 |  500 |     30 |
+|  7654 | MARTIN | SALESMAN | 7698 | 1981-09-28 | 1515 | 1400 |     30 |
+|  7782 | CLARK  | MANAGER  | 7839 | 1981-06-09 | 2695 | NULL |     10 |
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 | 1650 |    0 |     30 |
+|  7876 | ADAMS  | CLERK    | 7788 | 1983-01-12 | 1210 | NULL |     20 |
+|  7900 | JAMES  | CLERK    | 7698 | 1981-12-03 | 1045 | NULL |     30 |
+|  7934 | MILLER | CLERK    | 7782 | 1982-01-23 | 1430 | NULL |     10 |
++-------+--------+----------+------+------------+------+------+--------+
+8 rows in set (0.001 sec)
+
+
+14] Display all names. Length of each name should be 10 characters , add required spaces
+on left side of name, also display job, length of job should be 9 characters add required
+on the right side of job.
+
+
+MariaDB [DBMSBasic]> select lpad(ename,10," "),rpad(job,9," ")
+    -> from EMP;
++--------------------+-----------------+
+| lpad(ename,10," ") | rpad(job,9," ") |
++--------------------+-----------------+
+|      SMITH         | CLERK           |
+|      ALLEN         | SALESMAN        |
+|       WARD         | SALESMAN        |
+|      JONES         | MANAGER         |
+|     MARTIN         | SALESMAN        |
+|      BLAKE         | MANAGER         |
+|      CLARK         | MANAGER         |
+|      SCOTT         | ANALYST         |
+|       KING         | PRESIDENT       |
+|     TURNER         | SALESMAN        |
+|      ADAMS         | CLERK           |
+|      JAMES         | CLERK           |
+|       FORD         | ANALYST         |
+|     MILLER         | CLERK           |
++--------------------+-----------------+
+14 rows in set (0.001 sec)
+
+
+15] Display string “Hello” followed by name having first letter of name in capital,
+followed by ! for all employees who earned the commission.
+
+MariaDB [DBMSBasic]> select concat("Hello"," ",upper(substring(ename,1,1)),lower(substring(ename,2,length(ename)))," !")
+    -> from EMP
+    -> where comm is not null;
++----------------------------------------------------------------------------------------------+
+| concat("Hello"," ",upper(substring(ename,1,1)),lower(substring(ename,2,length(ename)))," !") |
++----------------------------------------------------------------------------------------------+
+| Hello Allen !                                                                                |
+| Hello Ward !                                                                                 |
+| Hello Martin !                                                                               |
+| Hello Turner !                                                                               |
++----------------------------------------------------------------------------------------------+
+4 rows in set (0.001 sec)
+
+MariaDB [DBMSBasic]> 
+
+
+16] Display all employee names from emp table in the following format.
+Hello Allen .
+
+MariaDB [DBMSBasic]> select concat("Hello"," ",upper(substring(ename,1,1)),lower(substring(ename,2,length(ename)))," .") greet
+    ->     from EMP;
++----------------+
+| greet          |
++----------------+
+| Hello Smith .  |
+| Hello Allen .  |
+| Hello Ward .   |
+| Hello Jones .  |
+| Hello Martin . |
+| Hello Blake .  |
+| Hello Clark .  |
+| Hello Scott .  |
+| Hello King .   |
+| Hello Turner . |
+| Hello Adams .  |
+| Hello James .  |
+| Hello Ford .   |
+| Hello Miller . |
++----------------+
+14 rows in set (0.001 sec)
+
+
+17] Write a query to display name is a job.
+e.g SMITH is a clerk
+job should be in small letters
+
+MariaDB [DBMSBasic]> select concat(ename," is a ",lower(job)) "jobs of emp"
+    -> from EMP;
++----------------------+
+| jobs of emp          |
++----------------------+
+| SMITH is a clerk     |
+| ALLEN is a salesman  |
+| WARD is a salesman   |
+| JONES is a manager   |
+| MARTIN is a salesman |
+| BLAKE is a manager   |
+| CLARK is a manager   |
+| SCOTT is a analyst   |
+| KING is a president  |
+| TURNER is a salesman |
+| ADAMS is a clerk     |
+| JAMES is a clerk     |
+| FORD is a analyst    |
+| MILLER is a clerk    |
++----------------------+
+14 rows in set (0.001 sec)
+
+
+18] Display all columns by separating with comma.
+
+MariaDB [DBMSBasic]> select concat_ws(',',empno,ename,job,mgr,hiredate,sal,ifnull(comm,'null'),deptno) "all colums"
+    -> from EMP;
++---------------------------------------------------+
+| all colums                                        |
++---------------------------------------------------+
+| 7369,SMITH,CLERK,7902,1980-12-17,880,null,20      |
+| 7499,ALLEN,SALESMAN,7698,1981-02-20,1790,300,30   |
+| 7521,WARD,SALESMAN,7698,1981-02-22,1425,500,30    |
+| 7566,JONES,MANAGER,7839,1981-04-02,3272.5,null,20 |
+| 7654,MARTIN,SALESMAN,7698,1981-09-28,1515,1400,30 |
+| 7698,BLAKE,MANAGER,7839,1981-05-01,3135,null,30   |
+| 7782,CLARK,MANAGER,7839,1981-06-09,2695,null,10   |
+| 7788,SCOTT,ANALYST,7566,1982-12-09,3300,null,20   |
+| 7839,KING,PRESIDENT,1981-11-17,5500,null,10       |
+| 7844,TURNER,SALESMAN,7698,1981-09-08,1650,0,30    |
+| 7876,ADAMS,CLERK,7788,1983-01-12,1210,null,20     |
+| 7900,JAMES,CLERK,7698,1981-12-03,1045,null,30     |
+| 7902,FORD,ANALYST,7566,1981-12-03,3300,null,20    |
+| 7934,MILLER,CLERK,7782,1982-01-23,1430,null,10    |
++---------------------------------------------------+
+14 rows in set (0.000 sec)
+
+
+
+
+19]Display all employees who work in either dept 10 or 30 or joined in year 1982.
+
+MariaDB [DBMSBasic]> select * 
+    -> from EMP
+    -> where deptno=10 or deptno=30 or date_format(hiredate,'%Y')=1982;
++-------+--------+-----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-----------+------+------------+------+------+--------+
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 | 1790 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 | 1425 |  500 |     30 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 | 1515 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 | 3135 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2695 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 | 3300 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5500 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 | 1650 |    0 |     30 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 | 1045 | NULL |     30 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1430 | NULL |     10 |
++-------+--------+-----------+------+------------+------+------+--------+
+10 rows in set (0.001 sec)
+
+
+20] To find max, min and sum of salary for all employees .
+
+MariaDB [DBMSBasic]> select max(sal) max_sal,min(sal) min_sal,sum(sal) sum
+    -> from EMP;
++---------+---------+---------+
+| max_sal | min_sal | sum     |
++---------+---------+---------+
+|    5500 |     880 | 32147.5 |
++---------+---------+---------+
+1 row in set (0.001 sec)
+
+
+21] Display ename,sal for dept 10 with max sal at the top.
+
+MariaDB [DBMSBasic]> select ename,sal
+    -> from EMP
+    -> where deptno=10
+    -> order by sal desc;
++--------+------+
+| ename  | sal  |
++--------+------+
+| KING   | 5500 |
+| CLARK  | 2695 |
+| MILLER | 1430 |
++--------+------+
+3 rows in set (0.001 sec)
+
+22] Write a query which will display name, department no and date of joining of all
+employees joined between January 1, 1981 and March 31, 1983. Sort it based on date
+of joining (ascending).
+
+select ename,deptno,hiredate
+from EMP
+where hiredate between "1981-01-01" and "1983-03-31"
+order by hiredate;MariaDB [DBMSBasic]> select ename,deptno,hiredate
+    -> from EMP
+    -> where hiredate between "1981-01-01" and "1983-03-31"
+    -> order by hiredate;
++--------+--------+------------+
+| ename  | deptno | hiredate   |
++--------+--------+------------+
+| ALLEN  |     30 | 1981-02-20 |
+| WARD   |     30 | 1981-02-22 |
+| JONES  |     20 | 1981-04-02 |
+| BLAKE  |     30 | 1981-05-01 |
+| CLARK  |     10 | 1981-06-09 |
+| TURNER |     30 | 1981-09-08 |
+| MARTIN |     30 | 1981-09-28 |
+| KING   |     10 | 1981-11-17 |
+| FORD   |     20 | 1981-12-03 |
+| JAMES  |     30 | 1981-12-03 |
+| MILLER |     10 | 1982-01-23 |
+| SCOTT  |     20 | 1982-12-09 |
+| ADAMS  |     20 | 1983-01-12 |
++--------+--------+------------+
+13 rows in set (0.001 sec)
+
+
+23] List the employees in dept 20 and 30 who do not get any commission.
+
+MariaDB [DBMSBasic]> select *
+    -> from EMP
+    -> where (comm is null or comm=0) and (deptno in (20,30));
++-------+--------+----------+------+------------+--------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+--------+----------+------+------------+--------+------+--------+
+|  7369 | SMITH  | CLERK    | 7902 | 1980-12-17 |    880 | NULL |     20 |
+|  7566 | JONES  | MANAGER  | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7698 | BLAKE  | MANAGER  | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7788 | SCOTT  | ANALYST  | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7876 | ADAMS  | CLERK    | 7788 | 1983-01-12 |   1210 | NULL |     20 |
+|  7900 | JAMES  | CLERK    | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7902 | FORD   | ANALYST  | 7566 | 1981-12-03 |   3300 | NULL |     20 |
++-------+--------+----------+------+------------+--------+------+--------+
+8 rows in set (0.001 sec)
+
+24] Display the number of employees who has got the commission.
+
+MariaDB [DBMSBasic]> select count(*) "EMP got comm"
+    -> from EMP
+    -> where comm is not null;
++--------------+
+| EMP got comm |
++--------------+
+|            4 |
++--------------+
+1 row in set (0.001 sec)
+
+
+25] Find sum of all the salaries in emp table.
+
+MariaDB [DBMSBasic]> select sum(sal) "sum of sal"
+    -> from EMP;
++------------+
+| sum of sal |
++------------+
+|    32147.5 |
++------------+
+1 row in set (0.001 sec)
+
+
+
+26] List all employees joined in year 1980
+MariaDB [DBMSBasic]> select * 
+    -> from EMP
+    -> where date_format(hiredate,'%Y')=1980;
++-------+-------+-------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB   | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+-------+------+------------+------+------+--------+
+|  7369 | SMITH | CLERK | 7902 | 1980-12-17 |  880 | NULL |     20 |
++-------+-------+-------+------+------------+------+------+--------+
+1 row in set (0.001 sec)
+
+
+27] Count number of clerks in dept 10 and 20.
+
+MariaDB [DBMSBasic]> select count(*) "total clerks"
+    -> from EMP
+    -> where deptno in (10,20) and job='clerk';
++--------------+
+| total clerks |
++--------------+
+|            3 |
++--------------+
+1 row in set (0.001 sec)
+
+
+
+28] List all the clerks and analysts with salary at least 1000 in dept 20 and 30.
+
+MariaDB [DBMSBasic]> select count(*) "total"
+    -> from EMP
+    -> where (sal>=1000) and (deptno in (20,30)) and (job in('clerk','analyst'));
++-------+
+| total |
++-------+
+|     4 |
++-------+
+1 row in set (0.001 sec)
+
+29] Find all employees whose sal is divisible by 3.
+
+MariaDB [DBMSBasic]> select * from EMP
+    -> where mod(sal,3)=0;
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7521 | WARD   | SALESMAN | 7698 | 1981-02-22 | 1425 |  500 |     30 |
+|  7654 | MARTIN | SALESMAN | 7698 | 1981-09-28 | 1515 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER  | 7839 | 1981-05-01 | 3135 | NULL |     30 |
+|  7788 | SCOTT  | ANALYST  | 7566 | 1982-12-09 | 3300 | NULL |     20 |
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 | 1650 |    0 |     30 |
+|  7902 | FORD   | ANALYST  | 7566 | 1981-12-03 | 3300 | NULL |     20 |
++-------+--------+----------+------+------------+------+------+--------+
+6 rows in set (0.001 sec)
+
+
+30] List emp working as managers and clerks with Salary at least 2000 except in dept 10
+and 20.
+
+
+MariaDB [DBMSBasic]> select count(*) "total"
+    -> from EMP
+    -> where (sal>=2000) and (deptno=30) and (job in('clerk','manager'));
++-------+
+| total |
++-------+
+|     1 |
++-------+
+1 row in set (0.001 sec)
+
+MariaDB [DBMSBasic]> select *
+    -> from EMP
+    -> where (sal>=2000) and (deptno=30) and (job in('clerk','manager'));
++-------+-------+---------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+---------+------+------------+------+------+--------+
+|  7698 | BLAKE | MANAGER | 7839 | 1981-05-01 | 3135 | NULL |     30 |
++-------+-------+---------+------+------------+------+------+--------+
+1 row in set (0.001 sec)
+
+
+31] List ename, deptno and dname for all employees how have only 5 letters in the name.
+
+MariaDB [DBMSBasic]> select e.ename,e.deptno,d.dname
+    -> from EMP e, DEPT d
+    -> where e.deptno=d.deptno and length(e.ename)=5;
++-------+--------+------------+
+| ename | deptno | dname      |
++-------+--------+------------+
+| SMITH |     20 | RESEARCH   |
+| ALLEN |     30 | SALES      |
+| JONES |     20 | RESEARCH   |
+| BLAKE |     30 | SALES      |
+| CLARK |     10 | ACCOUNTING |
+| SCOTT |     20 | RESEARCH   |
+| ADAMS |     20 | RESEARCH   |
+| JAMES |     30 | SALES      |
++-------+--------+------------+
+8 rows in set (0.001 sec)
+
+32] Count number of employees joined in the 1981
+
+
+MariaDB [DBMSBasic]> select count(*)
+    -> from EMP
+    -> where date_format(hiredate,'%Y')=1981;
++----------+
+| count(*) |
++----------+
+|       10 |
++----------+
+1 row in set (0.001 sec)
+
+
+
+33] Create 2 tables t1 and t2 with same data as in the class and practice set operators.
+create table t1
+(id int,
+ name varchar(15)
+);
+insert into t1
+values(1,'pune'),
+       (2,'chennai'),
+       (3,'mumbai'),(4,'Jaipur'),(5,'Bhopal');
+
+create table t2
+(id int,
+ name varchar(15)
+);
+insert into t2
+values(1,'pune'),
+       (2,'chennai'),
+       (3,'kolhapur'),(6,'Jaipur'),(7,'Hydrabad');
+       
+MariaDB [DBMSBasic]> select * 
+    -> from t1
+    -> union
+    -> select *
+    -> from t2;
++------+----------+
+| id   | name     |
++------+----------+
+|    1 | pune     |
+|    2 | chennai  |
+|    3 | mumbai   |
+|    4 | Jaipur   |
+|    5 | Bhopal   |
+|    3 | kolhapur |
+|    6 | Jaipur   |
+|    7 | Hydrabad |
++------+----------+
+8 rows in set (0.001 sec)
+
+MariaDB [DBMSBasic]> select *
+    -> from t1
+    -> intersect
+    -> select *
+    -> from t2;
++------+---------+
+| id   | name    |
++------+---------+
+|    1 | pune    |
+|    2 | chennai |
++------+---------+
+2 rows in set (0.001 sec)
+
+
+MariaDB [DBMSBasic]> select *
+    -> from t1
+    -> except
+    -> select *
+    -> from t2;
++------+--------+
+| id   | name   |
++------+--------+
+|    3 | mumbai |
+|    4 | Jaipur |
+|    5 | Bhopal |
++------+--------+
+3 rows in set (0.001 sec)
+
+
+34] Display ename,deptno,dname,loc,sal,comm and Total sal for all employees working
+In the dept located at Dallas.
+Total sal = sal+comm
+
+MariaDB [DBMSBasic]> select e.ename,e.deptno,d.dname,d.loc,e.sal,e.comm,sal+ifnull(comm,0) "total sal"
+    -> from EMP e,DEPT d
+    -> where e.deptno=d.deptno and d.loc='dallas';
++-------+--------+----------+--------+--------+------+-----------+
+| ename | deptno | dname    | loc    | sal    | comm | total sal |
++-------+--------+----------+--------+--------+------+-----------+
+| SMITH |     20 | RESEARCH | DALLAS |    880 | NULL |       880 |
+| JONES |     20 | RESEARCH | DALLAS | 3272.5 | NULL |    3272.5 |
+| SCOTT |     20 | RESEARCH | DALLAS |   3300 | NULL |      3300 |
+| ADAMS |     20 | RESEARCH | DALLAS |   1210 | NULL |      1210 |
+| FORD  |     20 | RESEARCH | DALLAS |   3300 | NULL |      3300 |
++-------+--------+----------+--------+--------+------+-----------+
+5 rows in set (0.001 sec)
+
+

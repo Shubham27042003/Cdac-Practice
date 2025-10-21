@@ -1,0 +1,643 @@
+1]  Delete customer from Pimpri area.
+
+MariaDB [DBMSBasic]> select*from Customer;
++-------+--------+----------+
+| cusid | cname  | location |
++-------+--------+----------+
+|     2 | Ganesh | Pune     |
+|     3 | Kishor | Kothrud  |
+|     4 | Priya  | Aundh    |
+|     5 | Geeta  | Pimpri   |
+|     6 | Raj    | Aundh    |
+|     7 | Yash   | Aundh    |
++-------+--------+----------+
+6 rows in set (0.001 sec)
+
+MariaDB [DBMSBasic]> delete from Customer where location="Pimpri";
+Query OK, 1 row affected (0.025 sec)
+
+MariaDB [DBMSBasic]> select*from Customer;\
++-------+--------+----------+
+| cusid | cname  | location |
++-------+--------+----------+
+|     2 | Ganesh | Pune     |
+|     3 | Kishor | Kothrud  |
+|     4 | Priya  | Aundh    |
+|     6 | Raj    | Aundh    |
+|     7 | Yash   | Aundh    |
++-------+--------+----------+
+5 rows in set (0.001 sec)
+2] Delete customer from area Aundh whose name is Priya.
+MariaDB [DBMSBasic]> delete from Customer where location="Aundh" and cname="Priya";
+Query OK, 1 row affected (0.015 sec)
+
+MariaDB [DBMSBasic]> select*from Customer;\
++-------+--------+----------+
+| cusid | cname  | location |
++-------+--------+----------+
+|     2 | Ganesh | Pune     |
+|     3 | Kishor | Kothrud  |
+|     6 | Raj    | Aundh    |
+|     7 | Yash   | Aundh    |
++-------+--------+----------+
+4 rows in set (0.001 sec)
+
+3] Create a copy of table customer and salesman by name customer1 and salesman1
+  MariaDB [DBMSBasic]> create table Customer1 as  select*from Customer;
+Query OK, 4 rows affected (0.149 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+MariaDB [DBMSBasic]> select*from Customer1;
++-------+--------+----------+
+| cusid | cname  | location |
++-------+--------+----------+
+|     2 | Ganesh | Pune     |
+|     3 | Kishor | Kothrud  |
+|     6 | Raj    | Aundh    |
+|     7 | Yash   | Aundh    |
++-------+--------+----------+
+4 rows in set (0.001 sec)
+
+MariaDB [DBMSBasic]> create table Salesman1 as select*from Salesman;
+Query OK, 4 rows affected (0.120 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+MariaDB [DBMSBasic]> select *from Salesman1;
++------+----------+--------+------------+
+| sid  | sname    | city   | experience |
++------+----------+--------+------------+
+|   10 | Rajesh   | mumbai |          5 |
+|   11 | Seema    | Pune   |          8 |
+|   12 | Shailesh | Nagpur |          7 |
+|   13 | Rakhi    | Pune   |          2 |
++------+----------+--------+------------+
+4 rows in set (0.001 sec)
+
+
+4] Delete entire table Salesman1.
+  MariaDB [DBMSBasic]> drop table Salesman1;
+Query OK, 0 rows affected (0.086 sec)
+
+MariaDB [DBMSBasic]> show tables;
++---------------------+
+| Tables_in_DBMSBasic |
++---------------------+
+| Customer            |
+| Customer1           |
+| Employee            |
+| Salesman            |
+| Vehicle             |
++---------------------+
+5 rows in set (0.001 sec)
+
+5]Consider table employee(eno, ename,basic,incentives) and solve below.
+   1)Ramesh is promoted as Head Clerk and now earns salary 60000. Write a query.
+	MariaDB [DBMSBasic]> update Employee
+    -> set basic=60000
+    -> where ename='Ramesh';
+Query OK, 1 row affected (0.027 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [DBMSBasic]> select * from Employee;
++------+--------+-------+------------+
+| eno  | ename  | basic | incentives |
++------+--------+-------+------------+
+|    1 | Rajesh | 20000 |       1500 |
+|    2 | Sarita | 25000 |       1000 |
+|    4 | Jitesh | 30000 |       1000 |
+|    5 | Ramesh | 60000 |       3000 |
+|   20 | Ajay   | 16000 |       NULL |
++------+--------+-------+------------+
+5 rows in set (0.001 sec)
+
+
+   2)Change incentive of Jitesh to 1000.
+	MariaDB [DBMSBasic]> update Employee set incentives=1000 where ename="Jitesh";
+Query OK, 1 row affected (0.028 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [DBMSBasic]> select *from Employee;
++------+--------+-------+------------+
+| eno  | ename  | basic | incentives |
++------+--------+-------+------------+
+|    1 | Rajesh | 20000 |       1500 |
+|    2 | Sarita | 25000 |       1000 |
+|    3 | Meera  | 15000 |       3000 |
+|    4 | Jitesh | 30000 |       1000 |
+|    5 | Ramesh | 12000 |       3000 |
+|   20 | Ajay   | 16000 |       NULL |
++------+--------+-------+------------+
+6 rows in set (0.001 sec)
+
+   3)Meera leaves the company. Make nacessary changes in the table. 
+	MariaDB [DBMSBasic]> delete from Employee where ename="Meera";
+Query OK, 1 row affected (0.027 sec)
+
+MariaDB [DBMSBasic]> select *from Employee;
++------+--------+-------+------------+
+| eno  | ename  | basic | incentives |
++------+--------+-------+------------+
+|    1 | Rajesh | 20000 |       1500 |
+|    2 | Sarita | 25000 |       1000 |
+|    4 | Jitesh | 30000 |       1000 |
+|    5 | Ramesh | 12000 |       3000 |
+|   20 | Ajay   | 16000 |       NULL |
++------+--------+-------+------------+
+5 rows in set (0.001 sec)
+
+   4)Ramesh is promoted as Head Clerk and now earns salary 60000. Write a query
+
+
+
+
+
+
+
+
+MariaDB [DBMSBasic]> update Employee
+    -> set basic=60000
+    -> where ename='Ramesh';
+Query OK, 1 row affected (0.027 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [DBMSBasic]> select * from Employee;
++------+--------+-------+------------+
+| eno  | ename  | basic | incentives |
++------+--------+-------+------------+
+|    1 | Rajesh | 20000 |       1500 |
+|    2 | Sarita | 25000 |       1000 |
+|    4 | Jitesh | 30000 |       1000 |
+|    5 | Ramesh | 60000 |       3000 |
+|   20 | Ajay   | 16000 |       NULL |
++------+--------+-------+------------+
+5 rows in set (0.001 sec)
+
+
+
+Note : Use Emp, dept table
+
+1] To list all records with sal > 2000 and comm>200
+
+	MariaDB [DBMSBasic]> select * from EMP
+    ->         where sal>2000 and comm>200;
+Empty set (0.001 sec)
+
+
+
+2] To list all records with job=’Clerk’ or sal>2000
+
+MariaDB [DBMSBasic]> select * from EMP
+    ->     where job='Clerk' or sal>2000;
++-------+--------+-----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-----------+------+------------+------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  800 | NULL |     20 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 2975 | NULL |     20 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 | 2850 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2450 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 | 3000 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000 | NULL |     10 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 | 1100 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 | 3000 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300 | NULL |     10 |
++-------+--------+-----------+------+------------+------+------+--------+
+10 rows in set (0.001 sec)
+
+
+
+3] To list all the records with sal=1250 or 1100
+	
+	MariaDB [DBMSBasic]> select * from EMP
+    ->     where sal=1250 or sal=1100;
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7521 | WARD   | SALESMAN | 7698 | 1981-02-22 | 1250 |  500 |     30 |
+|  7654 | MARTIN | SALESMAN | 7698 | 1981-09-28 | 1250 | 1400 |     30 |
+|  7876 | ADAMS  | CLERK    | 7788 | 1983-01-12 | 1100 | NULL |     20 |
++-------+--------+----------+------+------------+------+------+--------+
+3 rows in set (0.001 sec)
+
+
+4] To list all employees with sal>1250 and <2850
+	
+	MariaDB [DBMSBasic]> select * from EMP
+    	->where sal>1250 and sal<2850;
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7499 | ALLEN  | SALESMAN | 7698 | 1981-02-20 | 1600 |  300 |     30 |
+|  7782 | CLARK  | MANAGER  | 7839 | 1981-06-09 | 2450 | NULL |     10 |
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 | 1500 |    0 |     30 |
+|  7934 | MILLER | CLERK    | 7782 | 1982-01-23 | 1300 | NULL |     10 |
++-------+--------+----------+------+------------+------+------+--------+
+4 rows in set (0.001 sec)
+
+
+
+
+5] Retrieve the details (Name, Salary and dept no) of the emp who are working in department code 20
+	
+	MariaDB [DBMSBasic]> select ename,sal,deptno from EMP
+    ->     where deptno=20;
++-------+------+--------+
+| ename | sal  | deptno |
++-------+------+--------+
+| SMITH |  800 |     20 |
+| JONES | 2975 |     20 |
+| SCOTT | 3000 |     20 |
+| ADAMS | 1100 |     20 |
+| FORD  | 3000 |     20 |
++-------+------+--------+
+5 rows in set (0.001 sec)
+
+
+
+6] Display all employees who have joined after 9th june 81.
+	
+	MariaDB [DBMSBasic]> select * from EMP
+    ->     where hiredate>"1981-06-09";
++-------+--------+-----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-----------+------+------------+------+------+--------+
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 | 1250 | 1400 |     30 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 | 3000 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 | 1500 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 | 1100 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 | 3000 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300 | NULL |     10 |
++-------+--------+-----------+------+------------+------+------+--------+
+8 rows in set (0.001 sec)
+
+
+
+
+7] Display empno,empname,sal, comm and total salary.​
+Total Salary = comm + sal
+	
+	MariaDB [DBMSBasic]> select empno,ename,sal,comm,ifNULL(comm,0)+sal as "total salary"
+    	->from EMP;
++-------+--------+------+------+--------------+
+| empno | ename  | sal  | comm | total salary |
++-------+--------+------+------+--------------+
+|  7369 | SMITH  |  800 | NULL |          800 |
+|  7499 | ALLEN  | 1600 |  300 |         1900 |
+|  7521 | WARD   | 1250 |  500 |         1750 |
+|  7566 | JONES  | 2975 | NULL |         2975 |
+|  7654 | MARTIN | 1250 | 1400 |         2650 |
+|  7698 | BLAKE  | 2850 | NULL |         2850 |
+|  7782 | CLARK  | 2450 | NULL |         2450 |
+|  7788 | SCOTT  | 3000 | NULL |         3000 |
+|  7839 | KING   | 5000 | NULL |         5000 |
+|  7844 | TURNER | 1500 |    0 |         1500 |
+|  7876 | ADAMS  | 1100 | NULL |         1100 |
+|  7900 | JAMES  |  950 | NULL |          950 |
+|  7902 | FORD   | 3000 | NULL |         3000 |
+|  7934 | MILLER | 1300 | NULL |         1300 |
++-------+--------+------+------+--------------+
+14 rows in set (0.000 sec)
+
+	
+	
+
+8]Display all employees with sal >2000 or job is either clerk or Salesman.
+	MariaDB [DBMSBasic]> select * from EMP
+    -> where sal>2000 or job in("clerk","salesman");
++-------+--------+-----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-----------+------+------------+------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  800 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 | 1600 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 | 1250 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 2975 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 | 1250 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 | 2850 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2450 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 | 3000 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 | 1500 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 | 1100 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 | 3000 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300 | NULL |     10 |
++-------+--------+-----------+------+------------+------+------+--------+
+14 rows in set (0.001 sec)
+
+
+9] List the employees in dept 20 and 30 who did not get any commission.
+	MariaDB [DBMSBasic]> select * from EMP
+    -> where deptno in (20,30) and comm is NULL or comm=0;
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7369 | SMITH  | CLERK    | 7902 | 1980-12-17 |  800 | NULL |     20 |
+|  7566 | JONES  | MANAGER  | 7839 | 1981-04-02 | 2975 | NULL |     20 |
+|  7698 | BLAKE  | MANAGER  | 7839 | 1981-05-01 | 2850 | NULL |     30 |
+|  7788 | SCOTT  | ANALYST  | 7566 | 1982-12-09 | 3000 | NULL |     20 |
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 | 1500 |    0 |     30 |
+|  7876 | ADAMS  | CLERK    | 7788 | 1983-01-12 | 1100 | NULL |     20 |
+|  7900 | JAMES  | CLERK    | 7698 | 1981-12-03 |  950 | NULL |     30 |
+|  7902 | FORD   | ANALYST  | 7566 | 1981-12-03 | 3000 | NULL |     20 |
++-------+--------+----------+------+------------+------+------+--------+
+8 rows in set (0.001 sec)
+
+
+10] Display all employees who works in either dept 10 or 30 or joined in year 1982
+	
+	MariaDB [DBMSBasic]> select * from EMP
+    -> where deptno in(10,30) or hiredate between "1982-01-01" and "1982-12-31";
++-------+--------+-----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-----------+------+------------+------+------+--------+
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 | 1600 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 | 1250 |  500 |     30 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 | 1250 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 | 2850 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2450 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 | 3000 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 | 1500 |    0 |     30 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950 | NULL |     30 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300 | NULL |     10 |
++-------+--------+-----------+------+------------+------+------+--------+
+10 rows in set (0.001 sec)
+
+
+
+11] There is a salary hike by 20% . Display the information from emp table as
+empno,ename,sal and new sal.
+
+	MariaDB [DBMSBasic]>  select empno,ename,sal,sal+(sal*0.20) "new sal" from EMP;
++-------+--------+------+---------+
+| empno | ename  | sal  | new sal |
++-------+--------+------+---------+
+|  7369 | SMITH  |  800 |     960 |
+|  7499 | ALLEN  | 1600 |    1920 |
+|  7521 | WARD   | 1250 |    1500 |
+|  7566 | JONES  | 2975 |    3570 |
+|  7654 | MARTIN | 1250 |    1500 |
+|  7698 | BLAKE  | 2850 |    3420 |
+|  7782 | CLARK  | 2450 |    2940 |
+|  7788 | SCOTT  | 3000 |    3600 |
+|  7839 | KING   | 5000 |    6000 |
+|  7844 | TURNER | 1500 |    1800 |
+|  7876 | ADAMS  | 1100 |    1320 |
+|  7900 | JAMES  |  950 |    1140 |
+|  7902 | FORD   | 3000 |    3600 |
+|  7934 | MILLER | 1300 |    1560 |
++-------+--------+------+---------+
+14 rows in set (0.001 sec)
+
+
+
+12] Create new table emp10 same as emp without any data. check it's structure.
+	
+	MariaDB [DBMSBasic]> create table emp10
+    -> as
+    -> select * from EMP
+    -> where 2=3;
+Query OK, 0 rows affected (0.088 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [DBMSBasic]> describe emp10;
++----------+------------------+------+-----+---------+-------+
+| Field    | Type             | Null | Key | Default | Extra |
++----------+------------------+------+-----+---------+-------+
+| EMPNO    | int(10) unsigned | NO   |     | NULL    |       |
+| ENAME    | varchar(10)      | YES  |     | NULL    |       |
+| JOB      | varchar(9)       | YES  |     | NULL    |       |
+| MGR      | int(10) unsigned | YES  |     | NULL    |       |
+| HIREDATE | date             | YES  |     | NULL    |       |
+| SAL      | float            | YES  |     | NULL    |       |
+| COMM     | float            | YES  |     | NULL    |       |
+| DEPTNO   | int(10) unsigned | YES  |     | NULL    |       |
++----------+------------------+------+-----+---------+-------+
+8 rows in set (0.002 sec)
+
+
+13] Insert new row with data of your choice in emp10 table where manager(mgr) is null.
+
+	MariaDB [DBMSBasic]> insert into emp10 values(1,'JOHN','SALESMAN',NULL,"1982-03-01",2500,200,20);
+Query OK, 1 row affected (0.013 sec)
+
+MariaDB [DBMSBasic]> select * from emp10;
++-------+-------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+----------+------+------------+------+------+--------+
+|     1 | JOHN  | SALESMAN | NULL | 1982-03-01 | 2500 |  200 |     20 |
++-------+-------+----------+------+------------+------+------+--------+
+1 row in set (0.001 sec)
+
+
+
+
+14] Display the emp details who do not have manager.
+	
+	MariaDB [DBMSBasic]> select * from EMP
+    -> where mgr is NULL;
++-------+-------+-----------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB       | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+-----------+------+------------+------+------+--------+
+|  7839 | KING  | PRESIDENT | NULL | 1981-11-17 | 5000 | NULL |     10 |
++-------+-------+-----------+------+------------+------+------+--------+
+1 row in set (0.001 sec)
+
+
+15] Create table dept10 same as dept.
+	
+	MariaDB [DBMSBasic]> create table dept10
+    -> as
+    -> select * from DEPT;
+Query OK, 4 rows affected (0.120 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+MariaDB [DBMSBasic]> select * from dept10;
++--------+------------+----------+
+| DEPTNO | DNAME      | LOC      |
++--------+------------+----------+
+|     10 | ACCOUNTING | NEW YORK |
+|     20 | RESEARCH   | DALLAS   |
+|     30 | SALES      | CHICAGO  |
+|     40 | OPERATIONS | BOSTON   |
++--------+------------+----------+
+4 rows in set (0.001 sec)
+
+
+16] Use emp100 table to perform following query Update employee salary. Increase sal of
+each employee by 15% of sal+comm,change the mgr to 777 for all employees in dept 10.
+	
+	MariaDB [DBMSBasic]> create table emp100
+    -> as
+    -> select * from EMP;
+Query OK, 14 rows affected (0.108 sec)
+Records: 14  Duplicates: 0  Warnings: 0
+
+MariaDB [DBMSBasic]> select * from emp100;
++-------+--------+-----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-----------+------+------------+------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  800 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 | 1600 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 | 1250 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 2975 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 | 1250 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 | 2850 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2450 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 | 3000 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 | 1500 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 | 1100 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 | 3000 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300 | NULL |     10 |
++-------+--------+-----------+------+------------+------+------+--------+
+14 rows in set (0.001 sec)
+
+
+MariaDB [DBMSBasic]> update emp100
+    -> set sal=sal+((ifNULL(comm,0)+sal)*0.15) , mgr=777 where deptno=10;
+Query OK, 3 rows affected (0.048 sec)
+Rows matched: 3  Changed: 3  Warnings: 0
+
+MariaDB [DBMSBasic]> select * from emp100;
++-------+--------+-----------+------+------------+--------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+--------+-----------+------+------------+--------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |    800 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |   1600 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |   1250 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 |   2975 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |   1250 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |   2850 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   |  777 | 1981-06-09 | 2817.5 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |   3000 | NULL |     20 |
+|  7839 | KING   | PRESIDENT |  777 | 1981-11-17 |   5750 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |   1500 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |   1100 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |    950 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |   3000 | NULL |     20 |
+|  7934 | MILLER | CLERK     |  777 | 1982-01-23 |   1495 | NULL |     10 |
++-------+--------+-----------+------+------------+--------+------+--------+
+14 rows in set (0.001 sec)
+
+
+	
+
+17] Display all employees who joined between years 1981 to 1983.
+	
+	MariaDB [DBMSBasic]> select * from EMP
+    -> where hiredate between "1981-01-01" and "1983-12-31";
++-------+--------+-----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-----------+------+------------+------+------+--------+
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 | 1600 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 | 1250 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 2975 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 | 1250 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 | 2850 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2450 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 | 3000 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 | 1500 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 | 1100 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 | 3000 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300 | NULL |     10 |
++-------+--------+-----------+------+------------+------+------+--------+
+13 rows in set (0.001 sec)
+
+
+
+	
+18] Display empno, name and department number of an emp working under manager with id 7698.
+	
+	MariaDB [DBMSBasic]> select empno,ename,deptno
+    -> from EMP
+    -> where mgr=7698;
++-------+--------+--------+
+| empno | ename  | deptno |
++-------+--------+--------+
+|  7499 | ALLEN  |     30 |
+|  7521 | WARD   |     30 |
+|  7654 | MARTIN |     30 |
+|  7844 | TURNER |     30 |
+|  7900 | JAMES  |     30 |
++-------+--------+--------+
+5 rows in set (0.001 sec)
+
+
+19] List all managers working in dept 10.
+	
+	MariaDB [DBMSBasic]> select * from EMP
+    -> where job='manager' and deptno=10;
++-------+-------+---------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+---------+------+------------+------+------+--------+
+|  7782 | CLARK | MANAGER | 7839 | 1981-06-09 | 2450 | NULL |     10 |
++-------+-------+---------+------+------------+------+------+--------+
+1 row in set (0.001 sec)
+
+
+
+20] Display all jobs from emp table.
+
+MariaDB [DBMSBasic]> select distinct job from EMP;
++-----------+
+| job       |
++-----------+
+| CLERK     |
+| SALESMAN  |
+| MANAGER   |
+| ANALYST   |
+| PRESIDENT |
++-----------+
+
+
+21] Display all unique deptnos in which employees are working.
+	
+MariaDB [DBMSBasic]> select distinct deptno from EMP;
++--------+
+| deptno |
++--------+
+|     20 |
+|     30 |
+|     10 |
++--------+
+3 rows in set (0.001 sec)
+
+
+22] Implement following using case statement. Use data from emp database.​
+If comm is null ‘need improvement’ If <500 “ok” If >=500 and < 1000 ‘good'
+‘Excellent'.
+
+select empno,ename,job,mgr,hiredate,sal,comm,deptno,case when comm<500 then "ok"
+							 when comm>=500 and comm<1000 then "good"
+							 when comm is NULL then "need improvement"
+							 else "excellent"
+							 end as remark
+from EMP;
+
++-------+--------+-----------+------+------------+------+------+--------+------------------+
+| empno | ename  | job       | mgr  | hiredate   | sal  | comm | deptno | remark           |
++-------+--------+-----------+------+------------+------+------+--------+------------------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  800 | NULL |     20 | need improvement |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 | 1600 |  300 |     30 | ok               |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 | 1250 |  500 |     30 | good             |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 2975 | NULL |     20 | need improvement |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 | 1250 | 1400 |     30 | excellent        |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 | 2850 | NULL |     30 | need improvement |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2450 | NULL |     10 | need improvement |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 | 3000 | NULL |     20 | need improvement |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000 | NULL |     10 | need improvement |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 | 1500 |    0 |     30 | ok               |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 | 1100 | NULL |     20 | need improvement |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950 | NULL |     30 | need improvement |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 | 3000 | NULL |     20 | need improvement |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300 | NULL |     10 | need improvement |
++-------+--------+-----------+------+------------+------+------+--------+------------------+
+14 rows in set (0.001 sec)
+
+

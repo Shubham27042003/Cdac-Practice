@@ -1,0 +1,552 @@
+************* Assignment – 6 **************
+
+Create following tables for given schema. Apply constraints as mentioned in the shema.
+trainer(tid PK, tname not null , cid fk, salary default 20000,experience in years check >=10 )
+ course(cid pk, cname unique not null, fees default 5000)
+
+create table course(
+cid char(4),
+cname varchar(20) unique not null,
+fees int default 5000,
+constraint pk_cid primary key(cid)
+);
+
+create table trainer(
+tid char(4),
+tname varchar(20) not null,
+cid char(2),
+salary int default 20000,
+experience int,
+constraint ck_experience check(experience>=10),
+constraint pk_tid primary key(tid),
+constraint fk_cid foreign key(cid) references course(cid)
+); 
+
+
+insert into course values('c1','Core Java',7000),('c2','Linux',8000),('c3','Data Structure',10000),('c4','Python',12000),('c5','Dot Net',null);
+
+
+insert into trainer values('t1','Amit','c2',23000,12),('t2','Rajan','c1',32000,13),('t3','Shruti','c2',24000,11),('t4','Arti','c2',35000,15),('t5','Sameer','c3',40000,15),('t6','Sanjay',null,20000,12),('t7','Soha',null,35000,10);
+
+
+Check data in both the tables.
+1.Try adding following data in the above table 
+   trainer table
+    insert into trainer values('t2','Mahesh',null,16000,12);
+    
+    MariaDB [DBMSBasic]> insert into trainer values('t2','Mahesh',null,				 	16000,12);
+
+ERROR 1062 (23000): Duplicate entry 't2' for key 'PRIMARY'
+
+    insert into trainer values('t8','Meena',c3,25000,11);
+    MariaDB [DBMSBasic]> insert into trainer 	  values('t8','Meena',c3,25000,11);
+ERROR 1054 (42S22): Unknown column 'c3' in 'VALUES'
+
+
+    insert into trainer values('t9',null,'c2',30000,10);
+    MariaDB [DBMSBasic]> insert into trainer values('t9',null,'c2',30000,10);
+ERROR 1048 (23000): Column 'tname' cannot be null
+
+    insert into trainer values('t10','Soham','c2',35000,8);
+    MariaDB [DBMSBasic]>     insert into trainer values('t10','Soham','c2',35000,8);
+ERROR 4025 (23000): CONSTRAINT `ck_experience` failed for `DBMSBasic`.`trainer`
+
+    insert into trainer values('t11','Anil','c3',null,11);
+    MariaDB [DBMSBasic]> insert into trainer values('t11','Anil','c3',null,11);
+Query OK, 1 row affected (0.022 sec)
+
+MariaDB [DBMSBasic]> select * from trainer;
++-----+--------+------+--------+------------+
+| tid | tname  | cid  | salary | experience |
++-----+--------+------+--------+------------+
+| t1  | Amit   | c2   |  23000 |         12 |
+| t11 | Anil   | c3   |   NULL |         11 |
+| t2  | Rajan  | c1   |  32000 |         13 |
+| t3  | Shruti | c2   |  24000 |         11 |
+| t4  | Arti   | c2   |  35000 |         15 |
+| t5  | Sameer | c3   |  40000 |         15 |
+| t6  | Sanjay | NULL |  20000 |         12 |
+| t7  | Soha   | NULL |  35000 |         10 |
++-----+--------+------+--------+------------+
+8 rows in set (0.001 sec)
+
+
+2. Delete course c3 from course table
+delete from course
+where cid='c3';
+MariaDB [DBMSBasic]> delete from course
+    -> where cid='c3';
+ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails (`DBMSBasic`.`trainer`, CONSTRAINT `fk_cid` FOREIGN KEY (`cid`) REFERENCES `course` (`cid`))
+
+
+3. Update fees of course C5 to 10000 
+update course
+set fees=10000
+where cid='c5';
+
+MariaDB [DBMSBasic]> update course
+    -> set fees=10000
+    -> where cid='c5';
+Query OK, 1 row affected (0.016 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [DBMSBasic]> select * from course;
++-----+----------------+-------+
+| cid | cname          | fees  |
++-----+----------------+-------+
+| c1  | Core Java      |  7000 |
+| c2  | Linux          |  8000 |
+| c3  | Data Structure | 10000 |
+| c4  | Python         | 12000 |
+| c5  | Dot Net        | 10000 |
++-----+----------------+-------+
+5 rows in set (0.001 sec)
+
+
+*********** Use partition by clause*************
+
+1] Display all empno,ename,deptno,sal,avg(sal),min(sal), max(sal)
+
+MariaDB [DBMSBasic]> select empno,ename,deptno,sal,avg(sal)over() avg_sal,min(sal)over() min_sal,max(sal)over() max_sal
+    -> from EMP;
++-------+--------+--------+--------+---------+---------+---------+
+| empno | ename  | deptno | sal    | avg_sal | min_sal | max_sal |
++-------+--------+--------+--------+---------+---------+---------+
+|  7369 | SMITH  |     20 |    880 | 2296.25 |     880 |    5500 |
+|  7900 | JAMES  |     30 |   1045 | 2296.25 |     880 |    5500 |
+|  7876 | ADAMS  |     20 |   1210 | 2296.25 |     880 |    5500 |
+|  7521 | WARD   |     30 |   1425 | 2296.25 |     880 |    5500 |
+|  7934 | MILLER |     10 |   1430 | 2296.25 |     880 |    5500 |
+|  7654 | MARTIN |     30 |   1515 | 2296.25 |     880 |    5500 |
+|  7844 | TURNER |     30 |   1650 | 2296.25 |     880 |    5500 |
+|  7499 | ALLEN  |     30 |   1790 | 2296.25 |     880 |    5500 |
+|  7782 | CLARK  |     10 |   2695 | 2296.25 |     880 |    5500 |
+|  7698 | BLAKE  |     30 |   3135 | 2296.25 |     880 |    5500 |
+|  7566 | JONES  |     20 | 3272.5 | 2296.25 |     880 |    5500 |
+|  7902 | FORD   |     20 |   3300 | 2296.25 |     880 |    5500 |
+|  7788 | SCOTT  |     20 |   3300 | 2296.25 |     880 |    5500 |
+|  7839 | KING   |     10 |   5500 | 2296.25 |     880 |    5500 |
++-------+--------+--------+--------+---------+---------+---------+
+14 rows in set (0.001 sec)
+
+
+
+2] Write a query to display maximum salary, minimum salary and average sal along with emp name and deptno  and dname for all departments.
+MariaDB [DBMSBasic]> select e.ename,e.deptno,d.dname,max(sal)over() max_sal,min(sal)over() min_sal,avg(sal)over() avg_sal
+    -> from EMP e,DEPT d
+    -> where e.deptno=d.deptno;
++--------+--------+------------+---------+---------+---------+
+| ename  | deptno | dname      | max_sal | min_sal | avg_sal |
++--------+--------+------------+---------+---------+---------+
+| SMITH  |     20 | RESEARCH   |    5500 |     880 | 2296.25 |
+| JAMES  |     30 | SALES      |    5500 |     880 | 2296.25 |
+| ADAMS  |     20 | RESEARCH   |    5500 |     880 | 2296.25 |
+| WARD   |     30 | SALES      |    5500 |     880 | 2296.25 |
+| MILLER |     10 | ACCOUNTING |    5500 |     880 | 2296.25 |
+| MARTIN |     30 | SALES      |    5500 |     880 | 2296.25 |
+| TURNER |     30 | SALES      |    5500 |     880 | 2296.25 |
+| ALLEN  |     30 | SALES      |    5500 |     880 | 2296.25 |
+| CLARK  |     10 | ACCOUNTING |    5500 |     880 | 2296.25 |
+| BLAKE  |     30 | SALES      |    5500 |     880 | 2296.25 |
+| JONES  |     20 | RESEARCH   |    5500 |     880 | 2296.25 |
+| SCOTT  |     20 | RESEARCH   |    5500 |     880 | 2296.25 |
+| FORD   |     20 | RESEARCH   |    5500 |     880 | 2296.25 |
+| KING   |     10 | ACCOUNTING |    5500 |     880 | 2296.25 |
++--------+--------+------------+---------+---------+---------+
+14 rows in set (0.002 sec)
+
+
+3] Find sum of salary for all employees whose sal > 1000. Query should display ename,sal,Sum of salary, should be displayed according to the job.
+
+MariaDB [DBMSBasic]> select ename,job,sal,sum(sal)over(partition by job) sum_sal
+    -> from EMP
+    -> where sal>1000
+    -> order by job;
++--------+-----------+--------+---------+
+| ename  | job       | sal    | sum_sal |
++--------+-----------+--------+---------+
+| FORD   | ANALYST   |   3300 |    6600 |
+| SCOTT  | ANALYST   |   3300 |    6600 |
+| ADAMS  | CLERK     |   1210 |    3685 |
+| MILLER | CLERK     |   1430 |    3685 |
+| JAMES  | CLERK     |   1045 |    3685 |
+| BLAKE  | MANAGER   |   3135 |  9102.5 |
+| JONES  | MANAGER   | 3272.5 |  9102.5 |
+| CLARK  | MANAGER   |   2695 |  9102.5 |
+| KING   | PRESIDENT |   5500 |    5500 |
+| WARD   | SALESMAN  |   1425 |    6380 |
+| ALLEN  | SALESMAN  |   1790 |    6380 |
+| TURNER | SALESMAN  |   1650 |    6380 |
+| MARTIN | SALESMAN  |   1515 |    6380 |
++--------+-----------+--------+---------+
+13 rows in set (0.001 sec)
+
+
+4] Find number of clerks working in each department. Display ename,job and count of that job.
+
+MariaDB [DBMSBasic]> select ename,job,deptno,count(*)over(partition by deptno) "total count"
+    -> from EMP
+    -> where job='clerk';
++--------+-------+--------+-------------+
+| ename  | job   | deptno | total count |
++--------+-------+--------+-------------+
+| MILLER | CLERK |     10 |           1 |
+| SMITH  | CLERK |     20 |           2 |
+| ADAMS  | CLERK |     20 |           2 |
+| JAMES  | CLERK |     30 |           1 |
++--------+-------+--------+-------------+
+4 rows in set (0.000 sec)
+
+
+5] Find how many employees are working under same manager display mgr and the count 
+
+MariaDB [DBMSBasic]> select mgr,count(*) "total employees"
+    -> from EMP
+    -> group by mgr;
++------+-----------------+
+| mgr  | total employees |
++------+-----------------+
+| NULL |               1 |
+| 7566 |               2 |
+| 7698 |               5 |
+| 7782 |               1 |
+| 7788 |               1 |
+| 7839 |               3 |
+| 7902 |               1 |
++------+-----------------+
+7 rows in set (0.001 sec)
+
+MariaDB [DBMSBasic]> select mgr,count(*)over(partition by mgr) "total employees"
+    -> from EMP;
++------+-----------------+
+| mgr  | total employees |
++------+-----------------+
+| NULL |               1 |
+| 7566 |               2 |
+| 7566 |               2 |
+| 7698 |               5 |
+| 7698 |               5 |
+| 7698 |               5 |
+| 7698 |               5 |
+| 7698 |               5 |
+| 7782 |               1 |
+| 7788 |               1 |
+| 7839 |               3 |
+| 7839 |               3 |
+| 7839 |               3 |
+| 7902 |               1 |
++------+-----------------+
+14 rows in set (0.001 sec)
+
+
+
+6] Calculate how many employees earn sal greater than 1500 in each dept. Query should display ename, sal, count of employees earning sal >1500. 
+MariaDB [DBMSBasic]> select ename,sal,count(*)over(partition by deptno)
+    -> from EMP
+    -> where sal>1500;
++--------+--------+-----------------------------------+
+| ename  | sal    | count(*)over(partition by deptno) |
++--------+--------+-----------------------------------+
+| CLARK  |   2695 |                                 2 |
+| KING   |   5500 |                                 2 |
+| FORD   |   3300 |                                 3 |
+| JONES  | 3272.5 |                                 3 |
+| SCOTT  |   3300 |                                 3 |
+| ALLEN  |   1790 |                                 4 |
+| MARTIN |   1515 |                                 4 |
+| BLAKE  |   3135 |                                 4 |
+| TURNER |   1650 |                                 4 |
++--------+--------+-----------------------------------+
+9 rows in set (0.001 sec)
+
+
+7] Calculate the difference between max salary and minimum salary for depatno 20.  Query should display ename,sal, diff between max sal and employee's sal, diff between min sal and max sal of the dept.
+
+MariaDB [DBMSBasic]> select ename,sal,MAX(sal)over() - sal "Diff_Bet_max_EMP",MAX(sal)over()-MIN(sal)  over() "Diff_Bet_max_Min"
+    -> from EMP
+    -> where deptno=20;
++-------+--------+------------------+------------------+
+| ename | sal    | Diff_Bet_max_EMP | Diff_Bet_max_Min |
++-------+--------+------------------+------------------+
+| SMITH |    880 |             2420 |             2420 |
+| ADAMS |   1210 |             2090 |             2420 |
+| JONES | 3272.5 |             27.5 |             2420 |
+| FORD  |   3300 |                0 |             2420 |
+| SCOTT |   3300 |                0 |             2420 |
++-------+--------+------------------+------------------+
+5 rows in set (0.001 sec)
+
+
+****************** mixed queries ******************
+
+1] Display all employees who earn sal more that Smith earns.
+MariaDB [DBMSBasic]> select * 
+    -> from EMP
+    -> where sal>(
+    -> select sal 
+    -> from EMP
+    -> where ename='smith')
+    -> ;
++-------+--------+-----------+------+------------+--------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+--------+-----------+------+------------+--------+------+--------+
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |   1790 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 |   1425 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |   1515 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 |   1210 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |   1045 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 |
++-------+--------+-----------+------+------------+--------+------+--------+
+13 rows in set (0.032 sec)
+
+
+2] Display all employees who are working in Smith's department.
+MariaDB [DBMSBasic]> select *
+    -> from EMP
+    -> where deptno=(
+    -> select deptno
+    -> from EMP
+    -> where ename='smith')
+    -> ;
++-------+-------+---------+------+------------+--------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+-------+---------+------+------------+--------+------+--------+
+|  7369 | SMITH | CLERK   | 7902 | 1980-12-17 |    880 | NULL |     20 |
+|  7566 | JONES | MANAGER | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7788 | SCOTT | ANALYST | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7876 | ADAMS | CLERK   | 7788 | 1983-01-12 |   1210 | NULL |     20 |
+|  7902 | FORD  | ANALYST | 7566 | 1981-12-03 |   3300 | NULL |     20 |
++-------+-------+---------+------+------------+--------+------+--------+
+5 rows in set (0.001 sec)
+
+
+3] Display all employees who earn salary < Scott and salary > Adams sal.
+MariaDB [DBMSBasic]> select *
+    -> from EMP
+    -> where sal<(select sal from EMP where ename='scott') and sal>(select sal from EMP where ename='adams');
++-------+--------+----------+------+------------+--------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+--------+----------+------+------------+--------+------+--------+
+|  7499 | ALLEN  | SALESMAN | 7698 | 1981-02-20 |   1790 |  300 |     30 |
+|  7521 | WARD   | SALESMAN | 7698 | 1981-02-22 |   1425 |  500 |     30 |
+|  7566 | JONES  | MANAGER  | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN | 7698 | 1981-09-28 |   1515 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER  | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7782 | CLARK  | MANAGER  | 7839 | 1981-06-09 |   2695 | NULL |     10 |
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7934 | MILLER | CLERK    | 7782 | 1982-01-23 |   1430 | NULL |     10 |
++-------+--------+----------+------+------------+--------+------+--------+
+8 rows in set (0.000 sec)
+
+
+4] Display all employees with salary > either Ward's  salary or Blake's sal.
+MariaDB [DBMSBasic]> select *
+    -> from EMP
+    -> where sal>any(
+    -> select sal
+    -> from EMP
+    -> where ename in ('ward','blake'));
++-------+--------+-----------+------+------------+--------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+--------+-----------+------+------------+--------+------+--------+
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 |   1790 |  300 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 |   1515 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 |   3135 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 |   2695 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 |   1650 |    0 |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 |   1430 | NULL |     10 |
++-------+--------+-----------+------+------------+--------+------+--------+
+10 rows in set (0.001 sec)
+
+
+5] Display all employees who earn more than average sal of dept 10.
+MariaDB [DBMSBasic]> select *
+    -> from EMP
+    -> where sal>(
+    -> select avg(sal)
+    -> from EMP
+    -> where deptno=10);
++-------+-------+-----------+------+------------+--------+------+--------+
+| EMPNO | ENAME | JOB       | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+-------+-----------+------+------------+--------+------+--------+
+|  7566 | JONES | MANAGER   | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7788 | SCOTT | ANALYST   | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7839 | KING  | PRESIDENT | NULL | 1981-11-17 |   5500 | NULL |     10 |
+|  7902 | FORD  | ANALYST   | 7566 | 1981-12-03 |   3300 | NULL |     20 |
++-------+-------+-----------+------+------------+--------+------+--------+
+4 rows in set (0.001 sec)
+
+
+6] Display all employees who are working in research department.
+MariaDB [DBMSBasic]> select *
+    -> from EMP
+    -> where deptno=(
+    -> select deptno
+    -> from DEPT
+    -> where dname='research');
++-------+-------+---------+------+------------+--------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL    | COMM | DEPTNO |
++-------+-------+---------+------+------------+--------+------+--------+
+|  7369 | SMITH | CLERK   | 7902 | 1980-12-17 |    880 | NULL |     20 |
+|  7566 | JONES | MANAGER | 7839 | 1981-04-02 | 3272.5 | NULL |     20 |
+|  7788 | SCOTT | ANALYST | 7566 | 1982-12-09 |   3300 | NULL |     20 |
+|  7876 | ADAMS | CLERK   | 7788 | 1983-01-12 |   1210 | NULL |     20 |
+|  7902 | FORD  | ANALYST | 7566 | 1981-12-03 |   3300 | NULL |     20 |
++-------+-------+---------+------+------------+--------+------+--------+
+5 rows in set (0.001 sec)
+
+
+8] Create following tables and solve the  queries
+
+
+create table category(
+       cid int primary key,
+       cname varchar (15) unique not null,
+       description varchar (30)     
+     );
+
+create table salesman
+(
+   sid int primary key,
+   sname varchar (15) unique not null,
+   city varchar (15)
+);
+
+create table Product(
+   pid  int primary key,
+   pname varchar (20),
+   price float (6,2) default 20.00,
+   qty int check(qty>0),
+   cat_id int,
+   sals_id int,
+   constraint fk_cidnew foreign key(cat_id) references category(cid),  
+   constraint fk_sidnew foreign key(sals_id) references salesman(sid)  
+   );
+   
+   
+insert into category values(1,'chips','very crunchy'),(2,'chocolate','very chocolaty'),(3,'snacks','yummy'),(4,'cold drinks','thanda thanda cool cool');
+
+insert into salesman values(11,'Rahul','Pune'),(12,'Kirti','Mumbai'),(13,'Prasad','Nashik'),(14,'Arnav','Amravati');
+
+
+insert into Product values(123,'lays',30,30.00,1,12),(111,'pepsi',40,50.00,4,11),(134,'nachos',50,50.00,1,12),(124,'dairy milk',40,60.00,2,14),(125,'pringles',40,60.00,1,14),(213,'Sketch Pens',56,150.00,null,11),(167,'eraser',90,5.00,null,null);
+
+
+1. List all pid,pname,cid,cname  with category chips
+ MariaDB [DBMSBasic]> select p.pid,p.pname,c.cid,c.cname
+    ->  from Product p,category c
+    ->  where p.cat_id=c.cid and c.cname='chips';
++-----+----------+-----+-------+
+| pid | pname    | cid | cname |
++-----+----------+-----+-------+
+| 123 | lays     |   1 | chips |
+| 125 | pringles |   1 | chips |
+| 134 | nachos   |   1 | chips |
++-----+----------+-----+-------+
+3 rows in set (0.001 sec)
+
+
+ 
+2. Display all products sold by kirti
+
+MariaDB [DBMSBasic]> select *
+    -> from Product
+    -> where sals_id=(
+    -> select sid
+    -> from salesman
+    -> where sname='kirti');
++-----+--------+-------+------+--------+---------+
+| pid | pname  | price | qty  | cat_id | sals_id |
++-----+--------+-------+------+--------+---------+
+| 123 | lays   | 30.00 |   30 |      1 |      12 |
+| 134 | nachos | 50.00 |   50 |      1 |      12 |
++-----+--------+-------+------+--------+---------+
+2 rows in set (0.001 sec)
+
+
+3. List all products which belong to the category of lays and sold by Arnav. Consider product table
+MariaDB [DBMSBasic]> select * 
+    -> from Product
+    -> where (cat_id=(select cat_id from Product where pname='lays')) and (sals_id=(select sid from salesman where sname='arnav'));
++-----+----------+-------+------+--------+---------+
+| pid | pname    | price | qty  | cat_id | sals_id |
++-----+----------+-------+------+--------+---------+
+| 125 | pringles | 40.00 |   60 |      1 |      14 |
++-----+----------+-------+------+--------+---------+
+1 row in set (0.001 sec)
+
+
+4. Display the count of salesman working for the company.
+MariaDB [DBMSBasic]> select count(*)
+    -> from salesman;
++----------+
+| count(*) |
++----------+
+|        4 |
++----------+
+1 row in set (0.000 sec)
+
+
+
+5. Display the count of products having price > 50
+MariaDB [DBMSBasic]> select count(*) count
+    -> from Product 
+    -> where price>50;
++-------+
+| count |
++-------+
+|     2 |
++-------+
+1 row in set (0.001 sec)
+
+
+6. List all salesmen who stays in city where  name starts with P or N
+MariaDB [DBMSBasic]> select *
+    -> from salesman
+    -> where city regexp '^p|^n';
++-----+--------+--------+
+| sid | sname  | city   |
++-----+--------+--------+
+|  11 | Rahul  | Pune   |
+|  13 | Prasad | Nashik |
++-----+--------+--------+
+2 rows in set (0.001 sec)
+
+7. List prodid,pname,price,qty,and salesman for salesman working in Mumbai location.
+MariaDB [DBMSBasic]> select p.pid,p.pname,p.price,p.qty,s.sname
+    -> from Product p,salesman s
+    -> where p.sals_id=s.sid and s.city='mumbai';
++-----+--------+-------+------+-------+
+| pid | pname  | price | qty  | sname |
++-----+--------+-------+------+-------+
+| 123 | lays   | 30.00 |   30 | Kirti |
+| 134 | nachos | 50.00 |   50 | Kirti |
++-----+--------+-------+------+-------+
+2 rows in set (0.001 sec)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,112 @@
+
+-- Create database
+CREATE DATABASE IF NOT EXISTS ecommerce_exam;
+USE ecommerce_exam;
+
+-- Customers
+CREATE TABLE customers (
+  customer_id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(150) UNIQUE NOT NULL,
+  phone VARCHAR(20),
+  city VARCHAR(100),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Products
+CREATE TABLE products (
+  product_id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(150) NOT NULL,
+  category VARCHAR(100),
+  price DECIMAL(10,2) NOT NULL CHECK (price >= 0),
+  stock INT NOT NULL CHECK (stock >= 0),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Orders
+CREATE TABLE orders (
+  order_id INT AUTO_INCREMENT PRIMARY KEY,
+  customer_id INT NOT NULL,
+  order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  status ENUM('PENDING','PAID','SHIPPED','CANCELLED') DEFAULT 'PENDING',
+  total_amount DECIMAL(12,2) DEFAULT 0,
+  CONSTRAINT fk_orders_customer
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+);
+
+-- Order items
+CREATE TABLE order_items (
+  order_item_id INT AUTO_INCREMENT PRIMARY KEY,
+  order_id INT NOT NULL,
+  product_id INT NOT NULL,
+  quantity INT NOT NULL CHECK (quantity > 0),
+  unit_price DECIMAL(10,2) NOT NULL CHECK (unit_price >= 0),
+  CONSTRAINT fk_items_order FOREIGN KEY (order_id) REFERENCES orders(order_id),
+  CONSTRAINT fk_items_product FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+-- Payments
+CREATE TABLE payments (
+  payment_id INT AUTO_INCREMENT PRIMARY KEY,
+  order_id INT NOT NULL,
+  amount DECIMAL(12,2) NOT NULL CHECK (amount >= 0),
+  method ENUM('CARD','UPI','COD','NETBANKING') NOT NULL,
+  paid_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_payments_order FOREIGN KEY (order_id) REFERENCES orders(order_id)
+);
+
+-- Seed customers
+INSERT INTO customers (name, email, phone, city) VALUES
+('Aarav Sharma','aarav@example.com','9876543210','Pune'),
+('Isha Patel','isha@example.com','9876543211','Mumbai'),
+('Rohan Mehta','rohan@example.com','9876543212','Pune'),
+('Sara Khan','sara@example.com','9876543213','Delhi'),
+('Vikram Rao','vikram@example.com','9876543214','Hyderabad');
+
+-- Seed products
+INSERT INTO products (name, category, price, stock) VALUES
+('Wireless Mouse','Electronics',899.00,100),
+('Mechanical Keyboard','Electronics',3499.00,50),
+('Office Chair','Furniture',5999.00,20),
+('Coffee Mug','Home',249.00,200),
+('Notebook Pack','Stationery',199.00,300),
+('LED Monitor 24"','Electronics',9999.00,15),
+('Phone Stand','Accessories',299.00,120),
+('USB-C Cable','Electronics',399.00,150);
+
+-- Seed orders
+INSERT INTO orders (customer_id, order_date, status, total_amount) VALUES
+(1,'2025-09-01 10:00:00','PAID',0),
+(2,'2025-09-02 12:30:00','PAID',0),
+(3,'2025-09-03 09:45:00','PENDING',0),
+(4,'2025-09-05 14:20:00','SHIPPED',0),
+(5,'2025-09-06 16:10:00','CANCELLED',0);
+
+-- Seed order items
+INSERT INTO order_items (order_id, product_id, quantity, unit_price) VALUES
+(1,1,2,899.00),
+(1,4,3,249.00),
+(2,2,1,3499.00),
+(2,6,1,9999.00),
+(3,5,5,199.00),
+(3,8,2,399.00),
+(4,3,1,5999.00),
+(4,7,2,299.00),
+(5,4,4,249.00);
+
+-- Compute and update order totals based on items (Note : run below update statement as well)
+UPDATE orders o
+JOIN (
+  SELECT order_id, SUM(quantity * unit_price) AS total
+  FROM order_items
+  GROUP BY order_id
+) t ON o.order_id = t.order_id
+SET o.total_amount = t.total;
+
+-- Seed payments (only for PAID orders)
+INSERT INTO payments (order_id, amount, method, paid_at) VALUES
+(1, (SELECT total_amount FROM orders WHERE order_id=1), 'UPI', '2025-09-01 11:00:00'),
+(2, (SELECT total_amount FROM orders WHERE order_id=2), 'CARD', '2025-09-02 13:00:00');
+
+
+---

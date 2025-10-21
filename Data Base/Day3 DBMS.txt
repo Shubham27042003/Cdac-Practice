@@ -1,0 +1,312 @@
+
+
+Consider emp, dept and salgrade tables to answer following queries.
+1] List details of employees as ename, deptno, dname, sal, comm .
+
+	MariaDB [DBMSBasic]> select EMP.ENAME,DEPT.DEPTNO,DEPT.DNAME,EMP.SAL,EMP.COMM 
+    -> from EMP,DEPT 
+    -> where EMP.DEPTNO=DEPT.DEPTNO;
++--------+--------+------------+------+------+
+| ENAME  | DEPTNO | DNAME      | SAL  | COMM |
++--------+--------+------------+------+------+
+| SMITH  |     20 | RESEARCH   |  800 | NULL |
+| ALLEN  |     30 | SALES      | 1600 |  300 |
+| WARD   |     30 | SALES      | 1250 |  500 |
+| JONES  |     20 | RESEARCH   | 2975 | NULL |
+| MARTIN |     30 | SALES      | 1250 | 1400 |
+| BLAKE  |     30 | SALES      | 2850 | NULL |
+| CLARK  |     10 | ACCOUNTING | 2450 | NULL |
+| SCOTT  |     20 | RESEARCH   | 3000 | NULL |
+| KING   |     10 | ACCOUNTING | 5000 | NULL |
+| TURNER |     30 | SALES      | 1500 |    0 |
+| ADAMS  |     20 | RESEARCH   | 1100 | NULL |
+| JAMES  |     30 | SALES      |  950 | NULL |
+| FORD   |     20 | RESEARCH   | 3000 | NULL |
+| MILLER |     10 | ACCOUNTING | 1300 | NULL |
++--------+--------+------------+------+------+
+14 rows in set (0.001 sec)
+
+2] Display details of employees as empno,ename,sal,job, deptno,dname,loc for all employees working as a clerk or salesman and earning sal >2000
+
+	MariaDB [DBMSBasic]> select e.empno,e.ename,e.sal,e.job,e.deptno,d.dname,d.loc
+    -> from EMP e,DEPT d
+    -> where job in ('clerk','salesman') and e.sal>2000;
+Empty set (0.001 sec)
+
+
+3] Display ename,deptno,dname,sal and grade of employee
+
+	MariaDB [DBMSBasic]> select e.ename,d.deptno,d.dname,e.sal,sg.grade
+    -> from EMP e,DEPT d,SALGRADE sg
+    -> where e.deptno=d.deptno and e.sal between sg.losal and sg.hisal;
++--------+--------+------------+------+-------+
+| ename  | deptno | dname      | sal  | grade |
++--------+--------+------------+------+-------+
+| SMITH  |     20 | RESEARCH   |  800 |     1 |
+| ALLEN  |     30 | SALES      | 1600 |     3 |
+| WARD   |     30 | SALES      | 1250 |     2 |
+| JONES  |     20 | RESEARCH   | 2975 |     4 |
+| MARTIN |     30 | SALES      | 1250 |     2 |
+| BLAKE  |     30 | SALES      | 2850 |     4 |
+| CLARK  |     10 | ACCOUNTING | 2450 |     4 |
+| SCOTT  |     20 | RESEARCH   | 3000 |     4 |
+| KING   |     10 | ACCOUNTING | 5000 |     5 |
+| TURNER |     30 | SALES      | 1500 |     3 |
+| ADAMS  |     20 | RESEARCH   | 1100 |     1 |
+| JAMES  |     30 | SALES      |  950 |     1 |
+| FORD   |     20 | RESEARCH   | 3000 |     4 |
+| MILLER |     10 | ACCOUNTING | 1300 |     2 |
++--------+--------+------------+------+-------+
+14 rows in set (0.001 sec)
+
+
+4] Display the information of department i.e deptno, dname and loc in which clerks are
+working.
+	
+	sMariaDB [DBMSBasic]> select distinct d.deptno,d.dname,d.loc 
+    -> from DEPT d,EMP e
+    -> where d.deptno=e.deptno and e.job='clerk';
++--------+------------+----------+
+| deptno | dname      | loc      |
++--------+------------+----------+
+|     20 | RESEARCH   | DALLAS   |
+|     30 | SALES      | CHICAGO  |
+|     10 | ACCOUNTING | NEW YORK |
++--------+------------+----------+
+3 rows in set (0.001 sec)
+
+
+5] Find all employees with name ending with R .
+	
+	MariaDB [DBMSBasic]> select * from EMP
+    -> where ename like '%r';
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 | 1500 |    0 |     30 |
+|  7934 | MILLER | CLERK    | 7782 | 1982-01-23 | 1300 | NULL |     10 |
++-------+--------+----------+------+------------+------+------+--------+
+2 rows in set (0.001 sec)
+
+
+6] Find all employees with name starting with M and ending with R.
+	MariaDB [DBMSBasic]> select * from EMP
+    -> where ename like 'm%r';
++-------+--------+-------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB   | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-------+------+------------+------+------+--------+
+|  7934 | MILLER | CLERK | 7782 | 1982-01-23 | 1300 | NULL |     10 |
++-------+--------+-------+------+------------+------+------+--------+
+1 row in set (0.001 sec)
+
+
+7] To find all employees with name starting with either M or A.
+	MariaDB [DBMSBasic]> select * from EMP
+    ->        where ename like 'm%' or ename like 'a%';
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7499 | ALLEN  | SALESMAN | 7698 | 1981-02-20 | 1600 |  300 |     30 |
+|  7654 | MARTIN | SALESMAN | 7698 | 1981-09-28 | 1250 | 1400 |     30 |
+|  7876 | ADAMS  | CLERK    | 7788 | 1983-01-12 | 1100 | NULL |     20 |
+|  7934 | MILLER | CLERK    | 7782 | 1982-01-23 | 1300 | NULL |     10 |
++-------+--------+----------+------+------------+------+------+--------+
+4 rows in set (0.001 sec)
+
+
+8] List the employees name having letter 'L' as the second character.
+	MariaDB [DBMSBasic]> select * from EMP
+    -> where ename like '_l%';
++-------+-------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+----------+------+------------+------+------+--------+
+|  7499 | ALLEN | SALESMAN | 7698 | 1981-02-20 | 1600 |  300 |     30 |
+|  7698 | BLAKE | MANAGER  | 7839 | 1981-05-01 | 2850 | NULL |     30 |
+|  7782 | CLARK | MANAGER  | 7839 | 1981-06-09 | 2450 | NULL |     10 |
++-------+-------+----------+------+------------+------+------+--------+
+3 rows in set (0.001 sec)
+
+
+
+9] Find all employees with name having L at 3 rd position.
+	MariaDB [DBMSBasic]> select * from EMP
+    ->     where ename like '__l%';
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7499 | ALLEN  | SALESMAN | 7698 | 1981-02-20 | 1600 |  300 |     30 |
+|  7934 | MILLER | CLERK    | 7782 | 1982-01-23 | 1300 | NULL |     10 |
++-------+--------+----------+------+------------+------+------+--------+
+2 rows in set (0.001 sec)
+
+
+10] To list all employees with name ending by ES.
+	MariaDB [DBMSBasic]> select * from EMP
+    ->         where ename like '%es';
++-------+-------+---------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+---------+------+------------+------+------+--------+
+|  7566 | JONES | MANAGER | 7839 | 1981-04-02 | 2975 | NULL |     20 |
+|  7900 | JAMES | CLERK   | 7698 | 1981-12-03 |  950 | NULL |     30 |
++-------+-------+---------+------+------------+------+------+--------+
+2 rows in set (0.001 sec)
+
+
+11] To list all employees with job starting with C and ending with K.
+	MariaDB [DBMSBasic]> select * from EMP
+    ->     where job like 'c%k';
++-------+--------+-------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB   | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-------+------+------------+------+------+--------+
+|  7369 | SMITH  | CLERK | 7902 | 1980-12-17 |  800 | NULL |     20 |
+|  7876 | ADAMS  | CLERK | 7788 | 1983-01-12 | 1100 | NULL |     20 |
+|  7900 | JAMES  | CLERK | 7698 | 1981-12-03 |  950 | NULL |     30 |
+|  7934 | MILLER | CLERK | 7782 | 1982-01-23 | 1300 | NULL |     10 |
++-------+--------+-------+------+------------+------+------+--------+
+4 rows in set (0.001 sec)
+
+
+12] Find all employees with name starting with M, having L at 3 rd position and ends with R.
+	MariaDB [DBMSBasic]> select * from EMP
+    -> where ename like 'm_l%r';
++-------+--------+-------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB   | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-------+------+------------+------+------+--------+
+|  7934 | MILLER | CLERK | 7782 | 1982-01-23 | 1300 | NULL |     10 |
++-------+--------+-------+------+------------+------+------+--------+
+1 row in set (0.001 sec)
+
+
+13] Find all employees with name having L at 3 rd position and E at second last position.
+	MariaDB [DBMSBasic]> select * from EMP
+    ->     where ename like '__l%e_';
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7499 | ALLEN  | SALESMAN | 7698 | 1981-02-20 | 1600 |  300 |     30 |
+|  7934 | MILLER | CLERK    | 7782 | 1982-01-23 | 1300 | NULL |     10 |
++-------+--------+----------+------+------------+------+------+--------+
+2 rows in set (0.001 sec)
+
+
+14] Find all employees with name not starting with A
+	MariaDB [DBMSBasic]> select * from EMP
+    -> where ename not like 'a%';
++-------+--------+-----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+-----------+------+------------+------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  800 | NULL |     20 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 | 1250 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 2975 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 | 1250 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 | 2850 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2450 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 | 3000 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 | 1500 |    0 |     30 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 | 3000 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300 | NULL |     10 |
++-------+--------+-----------+------+------------+------+------+--------+
+12 rows in set (0.001 sec)
+
+
+15] Display all employees with sal >1000 and sal<3000 and job has A at starting position and ends with T.
+	MariaDB [DBMSBasic]> select * from EMP
+    -> where sal>1000 and sal<3000 and job like 'a%t';
+Empty set (0.001 sec)
+
+
+
+16] Write a query to display empno, ename, sal , increased sal by 10% and commission for all employees whose name starts with A,M or S.
+	MariaDB [DBMSBasic]> select empno,ename,sal,sal+(sal*0.10) "increase sal",comm
+    -> from EMP
+    -> where ename like 'a%' or ename like'm%' or ename like's%';
++-------+--------+------+--------------+------+
+| empno | ename  | sal  | increase sal | comm |
++-------+--------+------+--------------+------+
+|  7369 | SMITH  |  800 |          880 | NULL |
+|  7499 | ALLEN  | 1600 |         1760 |  300 |
+|  7654 | MARTIN | 1250 |         1375 | 1400 |
+|  7788 | SCOTT  | 3000 |         3300 | NULL |
+|  7876 | ADAMS  | 1100 |         1210 | NULL |
+|  7934 | MILLER | 1300 |         1430 | NULL |
++-------+--------+------+--------------+------+
+6 rows in set (0.001 sec)
+
+
+17] List the employees name having 'E' as a second last character.
+	MariaDB [DBMSBasic]> select * from EMP
+    -> where ename like '%e_';
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7499 | ALLEN  | SALESMAN | 7698 | 1981-02-20 | 1600 |  300 |     30 |
+|  7566 | JONES  | MANAGER  | 7839 | 1981-04-02 | 2975 | NULL |     20 |
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 | 1500 |    0 |     30 |
+|  7900 | JAMES  | CLERK    | 7698 | 1981-12-03 |  950 | NULL |     30 |
+|  7934 | MILLER | CLERK    | 7782 | 1982-01-23 | 1300 | NULL |     10 |
++-------+--------+----------+------+------------+------+------+--------+
+5 rows in set (0.001 sec)
+
+
+18] List employees whose name starts with either 'A' or 'S' in dept 20.
+	MariaDB [DBMSBasic]> select * from EMP
+    -> where deptno=20 and ename like 'a%' or ename like 's%';
++-------+-------+---------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+---------+------+------------+------+------+--------+
+|  7369 | SMITH | CLERK   | 7902 | 1980-12-17 |  800 | NULL |     20 |
+|  7788 | SCOTT | ANALYST | 7566 | 1982-12-09 | 3000 | NULL |     20 |
+|  7876 | ADAMS | CLERK   | 7788 | 1983-01-12 | 1100 | NULL |     20 |
++-------+-------+---------+------+------------+------+------+--------+
+3 rows in set (0.001 sec)
+
+
+19] To list all employees with comm is null and name starts with ‘S’
+	MariaDB [DBMSBasic]> select * from EMP
+    -> where comm is null and ename like 's%';
++-------+-------+---------+------+------------+------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+-------+---------+------+------------+------+------+--------+
+|  7369 | SMITH | CLERK   | 7902 | 1980-12-17 |  800 | NULL |     20 |
+|  7788 | SCOTT | ANALYST | 7566 | 1982-12-09 | 3000 | NULL |     20 |
++-------+-------+---------+------+------------+------+------+--------+
+2 rows in set (0.001 sec)
+
+
+20] List all the employee whose name does not end with 'S' in dept 20 and 30?
+	MariaDB [DBMSBasic]> select * from EMP
+    -> where ename not like '%s' and deptno in(20,30);
++-------+--------+----------+------+------------+------+------+--------+
+| EMPNO | ENAME  | JOB      | MGR  | HIREDATE   | SAL  | COMM | DEPTNO |
++-------+--------+----------+------+------------+------+------+--------+
+|  7369 | SMITH  | CLERK    | 7902 | 1980-12-17 |  800 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN | 7698 | 1981-02-20 | 1600 |  300 |     30 |
+|  7521 | WARD   | SALESMAN | 7698 | 1981-02-22 | 1250 |  500 |     30 |
+|  7654 | MARTIN | SALESMAN | 7698 | 1981-09-28 | 1250 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER  | 7839 | 1981-05-01 | 2850 | NULL |     30 |
+|  7788 | SCOTT  | ANALYST  | 7566 | 1982-12-09 | 3000 | NULL |     20 |
+|  7844 | TURNER | SALESMAN | 7698 | 1981-09-08 | 1500 |    0 |     30 |
+|  7902 | FORD   | ANALYST  | 7566 | 1981-12-03 | 3000 | NULL |     20 |
++-------+--------+----------+------+------------+------+------+--------+
+8 rows in set (0.001 sec)
+
+
+21] Display dept names which are having letter 'O'.
+ MariaDB [DBMSBasic]> select distinct dname from DEPT
+    ->  where dname like '%o%' or dname like 'o%' or dname like '%o';
++------------+
+| dname      |
++------------+
+| ACCOUNTING |
+| OPERATIONS |
++------------+
+2 rows in set (0.001 sec)
+
+
+
+
+	
+
+
