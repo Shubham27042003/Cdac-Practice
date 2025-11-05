@@ -1,0 +1,20 @@
+Assignments:
+Assignment 1: For singly linked list, implement
+a) following function to delete the specified element
+   void delete(int element);
+b) following function to delete all occurrences of specified element
+   void deleteAll(int element);
+a) following function to return true if specified element is present in list else return false
+   boolean search(int element);
+
+Assignment 2: For doubly linked list, implement
+a) following function to return true if specified element is present in list else return false
+   boolean search(int element);
+
+
+[Linked List Practice Problems]
+- 203. Remove Linked List Elements
+https://leetcode.com/problems/remove-linked-list-elements/
+
+- 83. Remove Duplicates from Sorted List
+https://leetcode.com/problems/remove-duplicates-from-sorted-list/

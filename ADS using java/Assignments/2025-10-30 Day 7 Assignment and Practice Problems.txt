@@ -1,0 +1,18 @@
+Assignments
+1. In the "BinaryTree" class implemented today in class, add following methods to print tree contents using preorder and postorder traversal.
+void printUsingPreorder();
+void printUsingPostorder();
+
+2. Implement the following function to return number of nodes in a binary tree.
+int CountNodes();
+
+3. Implement the following function to return number of leaf nodes in a binary tree.
+int CountLeafNodes();
+
+4. Implement the following function to return number of nodes in a binary tree, with specific value in it.
+int CountNodesWithValue(int value);
+
+
+Practice
+1. Invert Binary Tree
+https://leetcode.com/problems/invert-binary-tree/

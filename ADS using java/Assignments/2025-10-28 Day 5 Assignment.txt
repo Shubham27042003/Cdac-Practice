@@ -1,0 +1,6 @@
+Assignments:
+Assignment 1: For doubly linked list, implement
+a) following function to delete the specified element
+   void delete(int element);
+b) following function to delete all occurrences of specified element
+   void deleteAll(int element);

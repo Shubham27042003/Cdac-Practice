@@ -1,0 +1,35 @@
+Assignments:
+Q1. Define Queue as ADT (Refer to class notes).
+
+Q2. Implement a Generic Queue class using array that implements the Queue interface defined in Q1.
+Throw appropriate exception when required.
+(Refer to class notes)
+
+Q3: Implement Queue interface defined above, using Singly linked list.
+
+
+
+[Linked List Practice Problems]
+- 206. Reverse Linked List
+https://leetcode.com/problems/reverse-linked-list/
+
+- 1290. Convert Binary Number in a Linked List to Integer
+https://leetcode.com/problems/convert-binary-number-in-a-linked-list-to-integer/
+
+- 21. Merge Two Sorted Lists
+https://leetcode.com/problems/merge-two-sorted-lists/
+
+- 141. Linked List Cycle
+https://leetcode.com/problems/linked-list-cycle/
+
+- 160. Intersection of Two Linked Lists
+https://leetcode.com/problems/intersection-of-two-linked-lists/
+
+- 234. Palindrome Linked List
+https://leetcode.com/problems/palindrome-linked-list/
+
+- 876. Middle of the Linked List
+https://leetcode.com/problems/middle-of-the-linked-list/
+
+- 160. Intersection of Two Linked Lists
+https://leetcode.com/problems/intersection-of-two-linked-lists/

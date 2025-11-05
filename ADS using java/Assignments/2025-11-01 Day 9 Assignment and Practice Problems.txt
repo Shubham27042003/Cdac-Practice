@@ -1,0 +1,58 @@
+Assignment
+1. Implement the following function to find an element in an unsorted array, using linear search.
+boolean findUsingLinearSearch(int[] arr, int element);
+
+2. Implement the following function to find an element in a sorted array, using binary search.
+boolean findUsingBinarySearch(int[] arr, int element);
+Hint: Sort the array using the sorting algorithm implemented below.
+
+3. Implement the following function to sort the given array in descending order, using Bubble Sort
+void bubbleSort(int[] arr);
+Use the algorithm described in class to start from left side of array, to move smallest element towards the right end.
+
+4. Implement the following function to sort the given array in descending order, using Insertion Sort
+void insertionSort(int[] arr);
+
+5. Implement the following function to check if given array elements are sorted or not.
+boolean isArraySorted(int[] arr);
+Hint: Use logic used in bubble sort.
+
+
+
+Exercise 1: Implement the above algorithms to sort elements in descending order.
+
+Exercise 2: Implement Bubble Sort to start from right end of array, to bring appropriate element towards the left side.
+
+Exercise 3: Implement the algorithm to merge two sorted arrays. Use the following link to test your code.
+https://leetcode.com/problems/merge-sorted-array
+
+Exercise 4: Implement the algorithm to merge two sorted linked lists. Use the following link to test your code.
+https://leetcode.com/problems/merge-two-sorted-lists
+
+Exercise 5: Implement Merge Sort using multi threading.
+
+Exercise 6: Merge k Sorted Lists
+https://leetcode.com/problems/merge-k-sorted-lists
+
+Exercise 7: Implement Merge Sort using multi threading.
+
+
+
+[Practice problems that uses Binary Search algorithm as base]
+https://leetcode.com/problems/single-element-in-a-sorted-array/
+https://leetcode.com/problems/search-in-rotated-sorted-array/
+https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/
+https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/
+https://leetcode.com/problems/first-bad-version/
+
+
+
+
+- OpenJDK
+https://openjdk.org/
+
+- Github repo of OpenJDK implementation.
+https://github.com/openjdk/jdk
+
+- Location of source code for java.util classes.
+https://github.com/openjdk/jdk/tree/master/src/java.base/share/classes/java/util

@@ -1,0 +1,20 @@
+Assignment
+1. Implement following function to sort the given array in descending order, using merge sort
+public void mergeSort(int[] arr)
+
+2. Implement following function to sort the given array in descending order, using quick sort
+public void quickSort(int[] arr)
+
+3. Implement following function to sort the given array in descending order, using heap sort
+public void heapSort(int[] arr)
+
+4. Implement a hash table class in which each bucket is implemented as a linked list.
+Use the linked list class that is implemented earlier in module for this implementation.
+
+
+5: Implement printBFS() method in AdjListGraph class (code written in class today).
+The method should traverse graph using BFS and print the vertices.
+Graph data will be stored in an adjacency list.
+
+
+Exercise 1: Modify MakeMaxHeap algorithm covered in class to remove tail recursion.
