@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/sample?useSSL=false&serverTimezone=UTC
+    username: postgres
+    password: Temp1234
+    driver-class-name: org.postgresql.Driver
+
+  sql:
+    init:
+      mode: always
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
